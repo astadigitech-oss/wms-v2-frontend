@@ -5,6 +5,7 @@ import { ButtonSidebar } from "../button-sidebar";
 import {
   BarChartBig,
   Blocks,
+  Boxes,
   CandlestickChart,
   ClipboardMinus,
   FileCog,
@@ -144,25 +145,25 @@ const sidebarMenu = [
     title: "inventory",
     href: undefined,
     menu: [
-      // {
-      //   title: "Product",
-      //   href: undefined,
-      //   icon: <Boxes className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [
-      //     // {
-      //     //   title: "by category",
-      //     //   href: "/inventory/product/category",
-      //     // },
-      //     {
-      //       title: "by color",
-      //       href: "/inventory/product/color",
-      //     },
-      //     {
-      //       title: "by category",
-      //       href: "/inventory/product/rack",
-      //     },
-      //   ],
-      // },
+      {
+        title: "Product",
+        href: undefined,
+        icon: <Boxes className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [
+          // {
+          //   title: "by category",
+          //   href: "/inventory/product/category",
+          // },
+          {
+            title: "by color",
+            href: "/inventory/product/color",
+          },
+          {
+            title: "by category",
+            href: "/inventory/product/rack",
+          },
+        ],
+      },
       {
         title: "Category Setting",
         href: undefined,
