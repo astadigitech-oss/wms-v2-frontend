@@ -69,7 +69,7 @@ export const DialogDamaged = ({
               placeholder="Describe the damage condition..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[120px]"
+              className="min-h-30"
             />
           </div>
 

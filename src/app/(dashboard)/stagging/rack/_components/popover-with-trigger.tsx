@@ -45,12 +45,15 @@ const PopoverWithTrigger = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0"
+        className="p-0 bg-white border border-gray-200 shadow-xl z-50 rounded-lg"
+        align="start"
+        sideOffset={4}
         style={{ width: "var(--radix-popover-trigger-width)" }}
+        onWheel={(e) => e.stopPropagation()}
       >
         <Command>
           <CommandInput />
-          <CommandList className="p-1">
+          <CommandList className="p-1 max-h-[30vh] overflow-y-auto">
             <CommandGroup>
               <CommandEmpty>No Data Found.</CommandEmpty>
               {data.map((item: any) => (

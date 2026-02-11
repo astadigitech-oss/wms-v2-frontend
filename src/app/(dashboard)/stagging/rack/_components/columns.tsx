@@ -38,7 +38,7 @@ const ButtonAction = ({
   isLoading: boolean;
   label: string;
   onClick: (e: MouseEvent) => void;
-  type: "red" | "yellow" | "sky";
+  type: "red" | "yellow" | "sky" | "grey";
   icon: LucideIcon;
 }) => {
   const colorMap = {
@@ -46,6 +46,7 @@ const ButtonAction = ({
     yellow:
       "border-yellow-400 text-yellow-700 hover:text-yellow-700 hover:bg-yellow-50 disabled:hover:bg-yellow-50",
     sky: "border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50 disabled:hover:bg-sky-50",
+    grey: "border-gray-400 text-gray-700 hover:text-gray-700 hover:bg-gray-50 disabled:hover:bg-gray-50",
   };
 
   return (
@@ -203,12 +204,7 @@ export const columnProductStaging = ({
                 onClick={(e) => {
                   e.preventDefault();
                   setDamagedProductId(row.original.id);
-                  setDamagedBarcode(
-                    row.original.new_barcode_product ??
-                      row.original.old_barcode_product ??
-                      "-",
-                  );
-                  setSource(row.original.source ?? "");
+                  setDamagedBarcode(row.original.barcode ?? "-");
                   setIsOpenDamaged(true);
                 }}
                 className="flex items-center gap-2 text-red-700 focus:text-red-700"
@@ -263,8 +259,8 @@ export const columnFilteredProductStaging = ({
             handleRemoveFilter(row.original.id);
           }}
           isLoading={isLoading}
-          icon={XCircle}
-          type="red"
+          icon={Trash2}
+          type="grey"
         />
       </div>
     ),

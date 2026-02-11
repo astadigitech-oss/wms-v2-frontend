@@ -11,7 +11,7 @@ import { DataTable } from "@/components/data-table";
 import { AxiosError } from "axios";
 import React, { useEffect, useMemo } from "react";
 import { alertError, cn, formatRupiah } from "@/lib/utils";
-import { Loader2, ShieldCheck, RefreshCw } from "lucide-react";
+import { Loader2, ShieldCheck, RefreshCw, ClipboardCheck } from "lucide-react";
 
 import { useDoneCheckProductStaging } from "../_api/use-done-check-product-staging";
 import { useRemoveFilterProductStaging } from "../_api/use-remove-filter-product-staging";
@@ -33,7 +33,7 @@ export const DialogFiltered = ({
   const [DoneCheckAllDialog, confirmDoneCheckAll] = useConfirm(
     "Check All Product",
     "This action cannot be undone",
-    "liquid"
+    "liquid",
   );
   const { mutate: mutateRemoveFilter, isPending: isPendingRemoveFilter } =
     useRemoveFilterProductStaging();
@@ -98,11 +98,11 @@ export const DialogFiltered = ({
         </SheetHeader>
         <div className="w-full flex flex-col gap-5 mt-5 text-sm">
           <div className="flex gap-4 items-center w-full">
-            <div className="h-9 px-4 flex items-center rounded-md justify-center border gap-1 border-sky-500 bg-sky-100">
+            <div className="h-9 px-4 flex items-center rounded-md justify-center border gap-1 border-sky-500 bg-white">
               Total Filtered:{" "}
               <span className="font-semibold">{metaPage.total} Products</span>
             </div>
-            <div className="h-9 px-4 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-sky-500 bg-sky-100">
+            <div className="h-9 px-4 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-sky-500 bg-white">
               Total Price:{" "}
               <span className="font-semibold">
                 {formatRupiah(dataPriceTotal)}
@@ -125,13 +125,13 @@ export const DialogFiltered = ({
                 handleDoneCheckAll();
               }}
               type="button"
-              className="bg-sky-400/80 hover:bg-sky-400 text-black ml-auto disabled:opacity-100 disabled:hover:bg-red-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
+              className="bg-[#0B91FF] hover:bg-sky-400 text-white ml-auto disabled:opacity-100 disabled:hover:bg-red-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
               disabled={isPendingDoneCheckAll}
             >
               {isPendingDoneCheckAll ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : (
-                <ShieldCheck className="w-4 h-4 mr-2" />
+                <ClipboardCheck className="w-4 h-4 mr-2" />
               )}
               Done Check All
             </Button>

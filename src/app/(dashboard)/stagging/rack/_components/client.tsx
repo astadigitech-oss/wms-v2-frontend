@@ -23,7 +23,6 @@ import Forbidden from "@/components/403";
 import Loading from "@/app/(dashboard)/loading";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
-import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { useGetListRacks } from "../_api/use-get-list-racks";
 import { useSearchQuery } from "@/lib/search";
 import { usePagination } from "@/lib/pagination";
@@ -38,12 +37,10 @@ import { columnProductStaging, columnRackStaging } from "./columns";
 import { useAddFilterProductStaging } from "../_api/use-add-filter-product-staging";
 import { useExportStagingProduct } from "../_api/use-export-staging-product";
 import { DialogDetail } from "./dialog-detail";
-import { DialogToLPR } from "./dialog-to-lpr";
 import { DialogFiltered } from "./dialog-filtered";
 import { useGetListCategories } from "../_api/use-get-list-categories";
 import { useSubmit } from "../_api/use-submit";
 import { useDryScrap } from "../_api/use-dry-scrap";
-import DialogBarcode from "./dialog-barcode";
 import { useMigrateToRepair } from "../_api/use-migrate-to-repair";
 import { useToDamaged } from "../_api/use-to-damaged";
 import { DialogDamaged } from "./dialog-damaged";
@@ -54,6 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DialogBarcode from "./dialog-barcode";
 
 const DialogCreateEdit = dynamic(() => import("./dialog-create-edit"), {
   ssr: false,
@@ -187,6 +185,7 @@ export const Client = () => {
     data: dataRacks,
     refetch: refetchRacks,
     isLoading: isLoadingRacks,
+    isRefetching: isRefetchingRack,
     isError: isErrorRacks,
     error: errorRacks,
   } = useGetListRacks({ p: page, q: searchValueRack });
@@ -209,11 +208,9 @@ export const Client = () => {
 
   const rackData = dataRacks?.data.data.resource;
   const racksData = rackData?.data;
-  console.log("rackDataaaaa:", racksData);
   const totalRacks = rackData?.total_racks ?? 0;
   const totalProductRack = rackData?.total_products_in_racks ?? 0;
 
-  console.log("productData:", dataProducts);
   const productData = dataProducts?.data.data.resource.data;
   const CategoriesData = useMemo(() => {
     return dataCategories?.data.data.resource;
@@ -229,6 +226,9 @@ export const Client = () => {
     isPendingDelete ||
     isPendingCreate ||
     isPendingUpdate;
+
+  const loadingRack =
+    isLoadingRacks || isRefetchingRack || isPendingSubmit || isPendingCreate;
 
   // handle close
   const handleClose = () => {
@@ -267,7 +267,7 @@ export const Client = () => {
     mutateCreate(
       { body },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
           handleClose();
         },
       },
@@ -295,12 +295,14 @@ export const Client = () => {
   const handleSubmitDamaged = () => {
     mutateDamaged(
       {
+        id: damagedBarcode,
         body: {
           description: damagedDescription,
-          product_id: damagedProductId,
-          source: source,
+          // source: source,
+          quality: "damaged"
         },
       },
+
       {
         onSuccess: () => {
           setIsOpenDamaged(false);
@@ -364,6 +366,20 @@ export const Client = () => {
     <div className="flex flex-col bg-gray-100 w-full px-4 py-4 gap-4">
       <DeleteDialog />
       <ToDisplayDialog />
+      <DialogBarcode
+        onCloseModal={() => {
+          if (barcodeOpen) {
+            setBarcodeOpen(false);
+          }
+        }}
+        open={barcodeOpen}
+        barcode={selectedBarcode}
+        qty={selectedTotalProduct}
+        name={selectedNameRack}
+        handleCancel={() => {
+          setBarcodeOpen(false);
+        }}
+      />
       <DialogDetail
         open={isOpen === "detail"}
         onOpenChange={() => {
@@ -533,7 +549,7 @@ export const Client = () => {
               <RefreshCw
                 className={cn(
                   "w-4 h-4",
-                  (viewMode === "rack" ? isLoadingRacks : isLoadingProducts) &&
+                  (viewMode === "rack" ? loadingRack : isLoadingProducts) &&
                     "animate-spin",
                 )}
               />

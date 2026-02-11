@@ -14,7 +14,7 @@ export const useDoneCheckProductStaging = () => {
   const mutation = useMutation<AxiosResponse, Error, any>({
     mutationFn: async () => {
       const res = await axios.post(
-        `${baseUrl}/staging_products`,
+        `${baseUrl}/stagging-products`,
         {},
         {
           headers: {

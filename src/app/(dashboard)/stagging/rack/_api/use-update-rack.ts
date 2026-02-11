@@ -25,11 +25,11 @@ export const useUpdateRack = () => {
       });
       return res;
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       toast.success("Rack successfully updated");
       queryClient.invalidateQueries({ queryKey: ["list-racks"] });
       queryClient.invalidateQueries({
-        queryKey: ["rack-detail", res.data.data.resource.id],
+        queryKey: ["rack-detail"],
       });
     },
     onError: (err) => {

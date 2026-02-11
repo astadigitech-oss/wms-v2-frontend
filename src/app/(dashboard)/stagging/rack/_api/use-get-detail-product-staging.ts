@@ -8,7 +8,7 @@ export const useGetDetailProductStaging = ({ id }: any) => {
   const query = useQuery({
     queryKey: ["product-staging-detail", id],
     queryFn: async () => {
-      const res = await axios.get(`${baseUrl}/staging_products/${id}`, {
+      const res = await axios.get(`${baseUrl}/stagging-products/${id}/detail`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

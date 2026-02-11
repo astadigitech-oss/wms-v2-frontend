@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
+import { ClipboardCheck, Loader2, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { alertError, cn, formatRupiah, setPaginate } from "@/lib/utils";
 import {
@@ -25,7 +25,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useGetListApproveStaging } from "../_api/use-get-list-approve-staging";
 import { useDeleteApproveStaging } from "../_api/use-delete-staging-approve";
 import { useDoneCheckApproveStaging } from "../_api/use-done-check-staging-approve";
-import { format } from "date-fns";
+import { format, formatDate } from "date-fns";
 
 export const Client = () => {
   const [dataSearch, setDataSearch] = useQueryState("q", { defaultValue: "" });
@@ -68,8 +68,10 @@ export const Client = () => {
   } = useGetListApproveStaging({ p: page, q: searchValue });
 
   const dataList: any[] = useMemo(() => {
-    return data?.data.data.resource;
+    return data?.data.data.resource.data;
   }, [data]);
+
+  console.log("dataList", dataList);
 
   const loading = isLoading || isRefetching || isPending;
 
@@ -120,53 +122,43 @@ export const Client = () => {
       ),
     },
     {
-      accessorKey: "new_barcode_product||old_barcode_product",
+      accessorKey: "barcode",
       header: "Barcode",
-      cell: ({ row }) =>
-        row.original.new_barcode_product ??
-        row.original.old_barcode_product ??
-        "-",
+      cell: ({ row }) => row.original.barcode ?? "-",
     },
     {
-      accessorKey: "new_name_product",
+      accessorKey: "name",
       header: "Product Name",
       cell: ({ row }) => (
-        <div className="break-all max-w-112.5">
-          {row.original.new_name_product}
-        </div>
+        <div className="break-all max-w-112.5">{row.original.name}</div>
       ),
     },
     {
-      accessorKey: "new_category_product||new_tag_product",
+      accessorKey: "category_name",
       header: "Category",
-      cell: ({ row }) =>
-        row.original.new_category_product ??
-        row.original.new_tag_product ??
-        "-",
+      cell: ({ row }) => row.original.category_name ?? "-",
     },
     {
-      accessorKey: "new_price_product||old_price_product",
+      accessorKey: "price||display_price",
       header: "Price",
       cell: ({ row }) => (
         <div className="tabular-nums">
-          {formatRupiah(
-            row.original.new_price_product ?? row.original.old_price_product,
-          )}
+          {formatRupiah(row.original.price ?? row.original.display_price)}
         </div>
       ),
     },
-    {
-      accessorKey: "new_date_in_product",
-      header: "Date",
-      cell: ({ row }) => (
-        <div className="">
-          {format(
-            new Date(row.original.new_date_in_product),
-            "iii, dd MMM yyyy",
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   accessorKey: "new_date_in_product",
+    //   header: "Date",
+    //   cell: ({ row }) => (
+    //     <div className="">
+    //       {formatDate(
+    //         new Date(row.original.new_date_in_product),
+    //         "iii, dd MMM yyyy",
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       accessorKey: "action",
       header: () => <div className="text-center">Action</div>,
@@ -260,13 +252,13 @@ export const Client = () => {
                 handleDoneCheckAll();
               }}
               type="button"
-              className="bg-sky-400/80 hover:bg-sky-400 text-black ml-auto disabled:opacity-100 disabled:hover:bg-red-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
+              className="bg-[#0B91FF] hover:bg-sky-400 text-white ml-auto disabled:opacity-100 disabled:hover:bg-red-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
               disabled={isPendingDoneCheckAll}
             >
               {isPendingDoneCheckAll ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : (
-                <ShieldCheck className="w-4 h-4 mr-2" />
+                <ClipboardCheck className="w-4 h-4 mr-2" />
               )}
               Done Check All
             </Button>
