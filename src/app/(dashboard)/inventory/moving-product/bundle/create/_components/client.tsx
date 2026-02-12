@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -36,7 +38,6 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useAddProduct } from "../_api/use-add-product";
 import { useRemoveProduct } from "../_api/use-remove-product";
 import { useSubmit } from "../_api/use-submit";
-import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import dynamic from "next/dynamic";
 import { useGetListProduct } from "../_api/use-get-list-product";

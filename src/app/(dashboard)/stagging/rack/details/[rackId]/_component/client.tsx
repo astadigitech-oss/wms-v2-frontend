@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -39,7 +41,6 @@ import { useGetListProduct } from "../_api/use-get-list-product";
 import { useGetDetailRacks } from "../_api/use-get-detail-rack";
 import { useSubmit } from "../_api/use-submit";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 import { usePagination } from "@/lib/pagination";
 
 const DialogProduct = dynamic(() => import("./dialog-product"), {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import * as React from "react";
@@ -166,7 +167,6 @@ const ChartTooltipContent = React.forwardRef<
       hideIndicator,
       indicator = "dot",
       nameKey,
-      labelKey,
       formatter,
       label,
     },

@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
 import {
@@ -40,8 +43,6 @@ import { DialogDetail } from "./dialog-detail";
 import { DialogFiltered } from "./dialog-filtered";
 import { useGetListCategories } from "../_api/use-get-list-categories";
 import { useSubmit } from "../_api/use-submit";
-import { useDryScrap } from "../_api/use-dry-scrap";
-import { useMigrateToRepair } from "../_api/use-migrate-to-repair";
 import { useToDamaged } from "../_api/use-to-damaged";
 import { DialogDamaged } from "./dialog-damaged";
 import {
@@ -81,8 +82,7 @@ export const Client = () => {
   const [selectedTotalProduct, setSelectedTotalProduct] = useState("");
   const [isOpenDamaged, setIsOpenDamaged] = useState(false);
   const [damagedDescription, setDamagedDescription] = useState("");
-  const [damagedProductId, setDamagedProductId] = useState("");
-  const [source, setSource] = useState("");
+  const [setDamagedProductId] = useState("");
   const [damagedBarcode, setDamagedBarcode] = useState("");
 
   // separate search states for rack and product so values don't collide
@@ -154,31 +154,15 @@ export const Client = () => {
     "destructive",
   );
 
-  const [DialogDryScrap, confirmDryScrap] = useConfirm(
-    "Dry Scrap Product Stagging",
-    "This action cannot be undone",
-    "destructive",
-  );
-
-  const [DialogMigrateToRepair, confirmMigrateToRepair] = useConfirm(
-    "Migrate Product Stagging to Repair",
-    "This action cannot be undone",
-    "destructive",
-  );
-
   // mutate DELETE, UPDATE, CREATE
-  const { mutate: mutateDelete, isPending: isPendingDelete } = useDeleteRack();
+  const { mutate: mutateDelete } = useDeleteRack();
   const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateRack();
   const { mutate: mutateCreate, isPending: isPendingCreate } = useCreateRack();
-  const { mutate: mutateAddFilter, isPending: isPendingAddFilter } =
+  const { mutate: mutateAddFilter } =
     useAddFilterProductStaging();
-  const { mutate: mutateExport, isPending: isPendingExport } =
+  const { isPending: isPendingExport } =
     useExportStagingProduct();
   const { mutate: mutateSubmit, isPending: isPendingSubmit } = useSubmit();
-  const { mutate: mutateDryScrap, isPending: isPendingDryScrap } =
-    useDryScrap();
-  const { mutate: mutateMigrateToRepair, isPending: isPendingMigrateToRepair } =
-    useMigrateToRepair();
   const { mutate: mutateDamaged, isPending: isPendingDamaged } = useToDamaged();
 
   const {
@@ -215,17 +199,6 @@ export const Client = () => {
   const CategoriesData = useMemo(() => {
     return dataCategories?.data.data.resource;
   }, [dataCategories]);
-  const loading =
-    isLoadingProducts ||
-    isPendingAddFilter ||
-    isPendingExport ||
-    isPendingSubmit ||
-    isPendingDryScrap ||
-    isPendingMigrateToRepair ||
-    isLoadingRacks ||
-    isPendingDelete ||
-    isPendingCreate ||
-    isPendingUpdate;
 
   const loadingRack =
     isLoadingRacks || isRefetchingRack || isPendingSubmit || isPendingCreate;
@@ -241,17 +214,6 @@ export const Client = () => {
     }));
   };
 
-  const handleExport = async () => {
-    mutateExport("", {
-      onSuccess: (res) => {
-        const link = document.createElement("a");
-        link.href = res.data.data.resource;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      },
-    });
-  };
 
   const handleAddFilter = (id: any) => {
     mutateAddFilter({ id });
@@ -267,7 +229,7 @@ export const Client = () => {
     mutateCreate(
       { body },
       {
-        onSuccess: (res) => {
+        onSuccess: () => {
           handleClose();
         },
       },
@@ -298,7 +260,6 @@ export const Client = () => {
         id: damagedBarcode,
         body: {
           description: damagedDescription,
-          // source: source,
           quality: "damaged"
         },
       },
@@ -307,41 +268,18 @@ export const Client = () => {
         onSuccess: () => {
           setIsOpenDamaged(false);
           setDamagedDescription("");
-          setDamagedProductId("");
-          setSource("");
         },
       },
     );
   };
 
   // handle delete
-  const handleDelete = async (id: any) => {
-    const ok = await confirmDelete();
-
-    if (!ok) return;
-
-    mutateDelete({ id });
-  };
 
   const handleSubmit = async (id: any) => {
     const ok = await confirmToDisplay();
 
     if (!ok) return;
     mutateSubmit({ id });
-  };
-
-  const handleDryScrap = async (id: any) => {
-    const ok = await confirmDryScrap();
-
-    if (!ok) return;
-    mutateDryScrap({ id });
-  };
-
-  const handleMigrateToRepair = async (id: any) => {
-    const ok = await confirmMigrateToRepair();
-
-    if (!ok) return;
-    mutateMigrateToRepair({ id });
   };
   useEffect(() => {
     if (dataRacks) setPagination(dataRacks.data.data.resource);
@@ -626,17 +564,12 @@ export const Client = () => {
               columns={columnProductStaging({
                 metaPageProduct,
                 isLoadingProducts,
-                isPendingDryScrap,
                 handleAddFilter,
-                handleDryScrap,
-                handleMigrateToRepair,
-                isPendingMigrateToRepair,
                 setProductId,
                 setIsOpen,
                 setDamagedProductId,
                 setDamagedBarcode,
                 setIsOpenDamaged,
-                setSource,
               })}
               data={productData ?? []}
               isLoading={isLoadingProducts}

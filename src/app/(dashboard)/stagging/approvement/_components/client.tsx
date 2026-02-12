@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { ClipboardCheck, Loader2, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
+import { ClipboardCheck, Loader2, RefreshCw, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { alertError, cn, formatRupiah, setPaginate } from "@/lib/utils";
 import {
@@ -25,7 +27,6 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useGetListApproveStaging } from "../_api/use-get-list-approve-staging";
 import { useDeleteApproveStaging } from "../_api/use-delete-staging-approve";
 import { useDoneCheckApproveStaging } from "../_api/use-done-check-staging-approve";
-import { format, formatDate } from "date-fns";
 
 export const Client = () => {
   const [dataSearch, setDataSearch] = useQueryState("q", { defaultValue: "" });

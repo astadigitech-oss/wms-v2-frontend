@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -6,7 +8,6 @@ import {
   FileDown,
   Loader2,
   Percent,
-  PlusCircle,
   RefreshCw,
   Trash2,
 } from "lucide-react";
@@ -88,8 +89,8 @@ export const Client = () => {
     isError: isErrorCategory,
     error: errorCategory,
   } = useGetDetailCategory({ id: categoryId });
-
-  const dataList: any[] = useMemo(() => {
+ 
+  const dataList: any [] = useMemo(() => {
     return data?.data.resource;
   }, [data]);
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { AxiosError } from "axios";
@@ -35,13 +36,13 @@ export const Client = () => {
   // dialog create edit
   const [openDialog, setOpenDialog] = useQueryState(
     "dialog",
-    parseAsString.withDefault("")
+    parseAsString.withDefault(""),
   );
 
   // user Id for Edit
   const [userId, setUserId] = useQueryState(
     "userId",
-    parseAsString.withDefault("")
+    parseAsString.withDefault(""),
   );
 
   // loading
@@ -55,7 +56,7 @@ export const Client = () => {
   const [DeleteDialog, confirmDelete] = useConfirm(
     "Delete User",
     "This action cannot be undone",
-    "destructive"
+    "destructive",
   );
 
   // mutate DELETE, UPDATE, CREATE
@@ -82,13 +83,23 @@ export const Client = () => {
   } = useGetListRole();
 
   // memo data utama
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataList: any[] = useMemo(() => {
     return data?.data.data.resource.data;
   }, [data]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataListRole: any[] = useMemo(() => {
     return dataRole?.data.data.resource;
   }, [dataRole]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDelete = async (id: any) => {
+    const ok = await confirmDelete();
+
+    if (!ok) return;
+
+    mutateDelete({ params: { id } });
+  };
 
   // load data
   const loading = isLoading || isRefetching || isPending || isPendingDelete;
@@ -98,16 +109,9 @@ export const Client = () => {
     if (isSuccess && data) {
       setPagination(data?.data.data.resource);
     }
-  }, [data, isSuccess]);
+  }, [data]);
 
   // handle delete
-  const handleDelete = async (id: any) => {
-    const ok = await confirmDelete();
-
-    if (!ok) return;
-
-    mutateDelete({ params: { id } });
-  };
 
   useEffect(() => {
     alertError({

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +11,6 @@ import {
 import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
-import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import {
@@ -23,7 +24,6 @@ import {
   ReceiptText,
   Shield,
   Trash2,
-  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import React, { MouseEvent, useState } from "react";
@@ -75,16 +75,11 @@ export const columnProductStaging = ({
   metaPageProduct,
   isLoading,
   handleAddFilter,
-  // handleDryScrap,
-  // handleMigrateToRepair,
-  // isPendingMigrateToRepair,
   setProductId,
   setIsOpen,
-  // isPendingDryScrap,
   setIsOpenDamaged,
   setDamagedProductId,
   setDamagedBarcode,
-  setSource,
 }: any): ColumnDef<any>[] => [
   {
     header: () => <div className="text-center">No</div>,

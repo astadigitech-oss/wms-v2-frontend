@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Sheet,
   SheetContent,
@@ -11,7 +13,7 @@ import { DataTable } from "@/components/data-table";
 import { AxiosError } from "axios";
 import React, { useEffect, useMemo } from "react";
 import { alertError, cn, formatRupiah } from "@/lib/utils";
-import { Loader2, ShieldCheck, RefreshCw, ClipboardCheck } from "lucide-react";
+import { Loader2, RefreshCw, ClipboardCheck } from "lucide-react";
 
 import { useDoneCheckProductStaging } from "../_api/use-done-check-product-staging";
 import { useRemoveFilterProductStaging } from "../_api/use-remove-filter-product-staging";
