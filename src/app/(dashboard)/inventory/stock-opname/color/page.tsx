@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Stock Opname color",
 };
 
-const RackApprovementPage = async () => {
+const StockOpnameColorPage = async () => {
   const user = await protect();
 
   if (!user) redirect("/login");
@@ -21,4 +21,4 @@ const RackApprovementPage = async () => {
   );
 };
 
-export default RackApprovementPage;
+export default StockOpnameColorPage;

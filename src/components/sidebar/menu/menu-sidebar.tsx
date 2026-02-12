@@ -201,6 +201,10 @@ const sidebarMenu = [
             title: "color",
             href: "/inventory/stock-opname/color",
           },
+          {
+            title: "category",
+            href: "/inventory/stock-opname/category",
+          },
         ],
       },
       // {
