@@ -6,9 +6,9 @@ import Link from "next/link";
 export default function Forbidden() {
   return (
     <div className="w-full h-full relative flex justify-center items-center overflow-hidden rounded-md shadow-md">
-      <div className="absolute inset-x-0 -top-20 -z-0">
+      <div className="absolute inset-x-0 -top-20 z-0">
         <svg
-          className="min-w-[80rem] -translate-x-60 md:translate-x-0 mx-auto w-full -scale-y-100 contrast-150 opacity-50 dark:opacity-25"
+          className="min-w-7xl -translate-x-60 md:translate-x-0 mx-auto w-full -scale-y-100 contrast-150 opacity-50 dark:opacity-25"
           viewBox="0 0 1440 900"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

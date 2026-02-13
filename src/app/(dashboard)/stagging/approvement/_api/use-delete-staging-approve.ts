@@ -17,7 +17,7 @@ export const useDeleteApproveStaging = () => {
 
   const mutation = useMutation<AxiosResponse, Error, RequestType>({
     mutationFn: async ({ id }) => {
-      const res = await axios.delete(`${baseUrl}/staging_approves/${id}`, {
+      const res = await axios.delete(`${baseUrl}/stagging-approves/${id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

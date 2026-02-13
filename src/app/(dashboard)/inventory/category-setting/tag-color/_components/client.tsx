@@ -1,17 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
-  AlertCircle,
   ChevronRight,
   ClipboardPlus,
   Edit3,
   Loader2,
   Minus,
-  Monitor,
   Pencil,
-  PlusCircle,
   RefreshCw,
-  Smartphone,
   Trash2,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -50,13 +49,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useCreateTagColor } from "../_api/use-create-tag-color";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PickerColor from "@/components/picker-color";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 export const Client = () => {
   const queryClient = useQueryClient();

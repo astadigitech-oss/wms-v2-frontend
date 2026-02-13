@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -86,11 +88,11 @@ export const DialogDetail = ({
     return data?.data.data.resource;
   }, [data]);
 
+  console.log("dataDetail", dataDetail);
+
   const categories: any[] = useMemo(() => {
     return dataPrice?.data.resource ?? [];
   }, [dataPrice]);
-
-  console.log("dataPrice:", dataPrice);
 
   const handleUpdate = () => {
     const body = {
@@ -105,7 +107,8 @@ export const DialogDetail = ({
       new_status_product: dataDetail?.new_status_product,
       condition: Object.keys(JSON.parse(dataDetail?.new_quality)).find(
         (key) =>
-          JSON.parse(dataDetail?.new_quality)[key as keyof QualityData] !== null
+          JSON.parse(dataDetail?.new_quality)[key as keyof QualityData] !==
+          null,
       ),
       new_category_product: input.category ?? dataDetail?.new_category_product,
       new_tag_product: dataDetail?.new_tag_product,
@@ -121,7 +124,7 @@ export const DialogDetail = ({
           });
           onOpenChange();
         },
-      }
+      },
     );
   };
 
@@ -130,7 +133,7 @@ export const DialogDetail = ({
       const qualityObject = JSON.parse(v);
 
       const filteredEntries = Object.entries(qualityObject).find(
-        ([, value]) => value !== null
+        ([, value]) => value !== null,
       );
 
       return filteredEntries?.[0] ?? "";
@@ -139,7 +142,7 @@ export const DialogDetail = ({
 
   // selected category and its max price (used in confirmation dialog)
   const selectedCategory = categories?.find(
-    (item: any) => item.name_category === input.category
+    (item: any) => item.name_category === input.category,
   );
   const maxPriceCategory = selectedCategory
     ? parseFloat(selectedCategory.max_price_category ?? "0")
@@ -149,7 +152,7 @@ export const DialogDetail = ({
     let discount = 0;
     if (input.category) {
       const selectedCategory = categories.find(
-        (item: any) => item.name_category === input.category
+        (item: any) => item.name_category === input.category,
       );
       discount = selectedCategory
         ? parseFloat(selectedCategory.discount_category ?? "0")
@@ -195,16 +198,16 @@ export const DialogDetail = ({
   useEffect(() => {
     if (isSuccess && data) {
       setInput({
-        barcode: data?.data.data.resource.new_barcode_product ?? "",
-        name: data?.data.data.resource.new_name_product ?? "",
-        price: data?.data.data.resource.new_price_product ?? "0",
-        qty: data?.data.data.resource.new_quantity_product ?? "1",
-        oldBarcode: data?.data.data.resource.old_barcode_product ?? "",
-        oldName: data?.data.data.resource.new_name_product ?? "",
-        oldPrice: data?.data.data.resource.old_price_product ?? "0",
-        oldQty: data?.data.data.resource.new_quantity_product ?? "1",
-        category: data?.data.data.resource.new_category_product ?? "",
-        discount: data?.data.data.resource.new_discount ?? "0",
+        barcode: data?.data.data.resource.barcode ?? "",
+        name: data?.data.data.resource.name ?? "",
+        price: data?.data.data.resource.price ?? "0",
+        qty: data?.data.data.resource.quantity ?? "1",
+        oldBarcode: data?.data.data.resource.data_old.old_barcode_product ?? "",
+        oldName: data?.data.data.resource.data_old.old_name_product ?? "",
+        oldPrice: data?.data.data.resource.data_old.old_price_product ?? "0",
+        oldQty: data?.data.data.resource.data_old.old_quantity_product ?? "1",
+        category: data?.data.data.resource.category.name_category ?? "",
+        discount: data?.data.data.resource.discount ?? "0",
         displayPrice: data?.data.data.resource.display_price ?? "0",
       });
     }
@@ -506,7 +509,7 @@ export const DialogDetail = ({
                                         "my-2 first:mt-0 last:mb-0 flex gap-2 items-center border",
                                         input.category === item.name_category
                                           ? "border-gray-500"
-                                          : "border-gray-300"
+                                          : "border-gray-300",
                                       )}
                                       onSelect={() => {
                                         setInput((prev: any) => ({
@@ -517,7 +520,7 @@ export const DialogDetail = ({
                                             (dataDetail?.old_price_product /
                                               100) *
                                               parseFloat(
-                                                item?.discount_category ?? "0"
+                                                item?.discount_category ?? "0",
                                               )
                                           ).toString(),
                                         }));
@@ -537,7 +540,7 @@ export const DialogDetail = ({
                                             input.category ===
                                               item.name_category
                                               ? "border-gray-500"
-                                              : "border-gray-300"
+                                              : "border-gray-300",
                                           )}
                                         >
                                           {item.name_category}
@@ -549,8 +552,8 @@ export const DialogDetail = ({
                                             Max.{" "}
                                             {formatRupiah(
                                               parseFloat(
-                                                item.max_price_category
-                                              )
+                                                item.max_price_category,
+                                              ),
                                             )}
                                           </span>
                                         </p>

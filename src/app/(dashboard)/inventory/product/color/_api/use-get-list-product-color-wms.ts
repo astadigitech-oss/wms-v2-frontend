@@ -3,13 +3,13 @@ import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { getCookie } from "cookies-next/client";
 
-export const useGetAnalyticSaleYearly = (year: any) => {
+export const useGetListProductColorWMS = ({ p, q }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["analytic-sale-yearly"],
+    queryKey: ["list-product-color-wms", { p, q }],
     queryFn: async () => {
       const res = await axios.get(
-        `${baseUrl}/dashboard/yearly-analytic-sales?y=${year}`,
+        `${baseUrl}/products/by-color?page=${p}&q=${q}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

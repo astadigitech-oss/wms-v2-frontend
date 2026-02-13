@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
 import {
@@ -49,7 +52,6 @@ import Loading from "@/app/(dashboard)/loading";
 import { useSubmitProduct } from "../_api/use-submit-product";
 import { format } from "date-fns";
 import BarcodePrinted from "@/components/barcode";
-import { useSubmitDoubleBarcode } from "../_api/use-submit-double-barcode";
 import { useSubmitDoneCheckAll } from "../_api/use-submit-done-check-all";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -76,11 +78,11 @@ export const Client = () => {
     discount: "",
   });
 
-  const [SubmitDoubleDialog, confirmSubmit] = useConfirm(
-    "Barcode Duplication Confirmation",
-    "Confirm to submit the same barcode again, This action cannot be undone",
-    "liquid",
-  );
+  // const [SubmitDoubleDialog, confirmSubmit] = useConfirm(
+  //   "Barcode Duplication Confirmation",
+  //   "Confirm to submit the same barcode again, This action cannot be undone",
+  //   "liquid",
+  // );
   const [DoneAllDialog, confirmDoneAll] = useConfirm(
     "Done check all documents",
     "",
@@ -92,8 +94,6 @@ export const Client = () => {
   const [idProduct, setIdProduct] = useState("");
   const codeDocument = `${codeDocumentId}`;
   const { mutate, isPending: isPendingSubmit } = useSubmitProduct();
-  const { mutate: mutateDouble, isPending: isPendingDouble } =
-    useSubmitDoubleBarcode();
   const { mutate: mutateDoneAll } = useSubmitDoneCheckAll();
 
   const { data, error, isError } = useGetCheckManifestInbound({
@@ -158,36 +158,36 @@ export const Client = () => {
 
     mutateDoneAll({ code_document: codeDocument });
   };
-  const handleSubmitDouble = async (body: any) => {
-    const ok = await confirmSubmit();
+  // const handleSubmitDouble = async (body: any) => {
+  //   const ok = await confirmSubmit();
 
-    if (!ok) return;
+  //   if (!ok) return;
 
-    mutateDouble(body, {
-      onSuccess: (data) => {
-        setDataSearch("");
-        setMetaData({
-          abnormal: "",
-          damaged: "",
-          non: "",
-          discount: 0,
-          name: "",
-          qty: 0,
-        });
-        if (searchRef.current) {
-          searchRef.current.focus();
-        }
-        setBarcodeOpen(true);
-        setMetaBarcode({
-          barcode: data.data.data.resource.new_barcode_product,
-          newPrice: data.data.data.resource.new_price_product,
-          oldPrice: data.data.data.resource.old_price_product,
-          category: data.data.data.resource.new_category_product,
-          discount: data.data.data.resource.discount_category,
-        });
-      },
-    });
-  };
+  //   mutateDouble(body, {
+  //     onSuccess: (data) => {
+  //       setDataSearch("");
+  //       setMetaData({
+  //         abnormal: "",
+  //         damaged: "",
+  //         non: "",
+  //         discount: 0,
+  //         name: "",
+  //         qty: 0,
+  //       });
+  //       if (searchRef.current) {
+  //         searchRef.current.focus();
+  //       }
+  //       setBarcodeOpen(true);
+  //       setMetaBarcode({
+  //         barcode: data.data.data.resource.new_barcode_product,
+  //         newPrice: data.data.data.resource.new_price_product,
+  //         oldPrice: data.data.data.resource.old_price_product,
+  //         category: data.data.data.resource.new_category_product,
+  //         discount: data.data.data.resource.discount_category,
+  //       });
+  //     },
+  //   });
+  // };
 
   const openBarcodeDialogFromResponse = (product: any) => {
     setMetaBarcode({
@@ -332,7 +332,6 @@ export const Client = () => {
 
   return (
     <div className="flex flex-col items-start bg-gray-100 w-full relative px-4 gap-4 py-4">
-      <SubmitDoubleDialog />
       <DoneAllDialog />
       <Breadcrumb>
         <BreadcrumbList>
@@ -370,7 +369,7 @@ export const Client = () => {
           >
             <button
               type="button"
-              disabled={loadingBarcode || isPendingSubmit || isPendingDouble}
+              disabled={loadingBarcode || isPendingSubmit}
               className="flex items-center text-black group-hover:mr-6 mr-4 transition-all w-auto"
             >
               <div className="w-10 h-10 rounded-full group-hover:shadow justify-center flex items-center group-hover:bg-gray-100 transition-all">
@@ -396,7 +395,7 @@ export const Client = () => {
               placeholder="Search..."
               ref={searchRef}
               autoFocus
-              disabled={isPendingSubmit || isPendingDouble}
+              disabled={isPendingSubmit}
             />
             {dataSearch.length > 0 && (
               <button
@@ -428,7 +427,7 @@ export const Client = () => {
             }}
             className="bg-sky-400/80 hover:bg-sky-400 text-black"
             type="button"
-            disabled={loadingBarcode || isPendingSubmit || isPendingDouble}
+            disabled={loadingBarcode || isPendingSubmit}
           >
             <ShieldCheck className="w-4 h-4 mr-2" />
             Done Check All
@@ -448,7 +447,7 @@ export const Client = () => {
           </div>
         )}
       </div>
-      {loadingBarcode || isPendingSubmit || isPendingDouble ? (
+      {loadingBarcode || isPendingSubmit ? (
         <div className="flex flex-col w-full bg-white rounded-md shadow items-center justify-center h-75 gap-3">
           <Loader className="size-6 animate-spin" />
           <p className="text-sm ml-1">

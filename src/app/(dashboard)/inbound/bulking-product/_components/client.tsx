@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
   AlertCircle,
   CheckCircle2,
   ChevronDown,
-  FileDown,
   FileSpreadsheet,
-  Loader2,
-  RefreshCcw,
   Save,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -32,7 +31,6 @@ import { Button } from "@/components/ui/button";
 import { parseAsBoolean, parseAsStringLiteral, useQueryState } from "nuqs";
 import { useUploadBulking } from "../_api/use-upload-bulking";
 import Loading from "@/app/(dashboard)/loading";
-import { useExportTemplate } from "../_api/use-export-template";
 
 interface UploadedFileProps {
   file: File;
@@ -56,8 +54,6 @@ export const Client = () => {
     parseAsBoolean.withDefault(false),
   );
   const { mutate } = useUploadBulking();
-  const { mutate: mutateExport, isPending: isPendingExport } =
-    useExportTemplate();
 
   // state data
   const [selectedFile, setSelectedFile] = useState<UploadedFileProps | null>(
@@ -121,17 +117,17 @@ export const Client = () => {
   });
 
   // handle export
-  const handleExport = async () => {
-    mutateExport(undefined, {
-      onSuccess: (res: any) => {
-        const link = document.createElement("a");
-        link.href = res.data.data.resource;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      },
-    });
-  };
+  // const handleExport = async () => {
+  //   mutateExport(undefined, {
+  //     onSuccess: (res: any) => {
+  //       const link = document.createElement("a");
+  //       link.href = res.data.data.resource;
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //     },
+  //   });
+  // };
 
   useEffect(() => {
     setIsMounted(true);

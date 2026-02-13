@@ -3,16 +3,15 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ButtonSidebar } from "../button-sidebar";
 import {
-  BarChartBig,
   Blocks,
-  CandlestickChart,
-  ClipboardMinus,
+  Boxes,
   FileCog,
   FolderClock,
   LibraryBigIcon,
   LineChart,
   PackageSearch,
   RailSymbol,
+  SendToBack,
   SquareLibrary,
   Target,
   User,
@@ -144,25 +143,25 @@ const sidebarMenu = [
     title: "inventory",
     href: undefined,
     menu: [
-      // {
-      //   title: "Product",
-      //   href: undefined,
-      //   icon: <Boxes className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [
-      //     // {
-      //     //   title: "by category",
-      //     //   href: "/inventory/product/category",
-      //     // },
-      //     {
-      //       title: "by color",
-      //       href: "/inventory/product/color",
-      //     },
-      //     {
-      //       title: "by category",
-      //       href: "/inventory/product/rack",
-      //     },
-      //   ],
-      // },
+      {
+        title: "Product",
+        href: undefined,
+        icon: <Boxes className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [
+          // {
+          //   title: "by category",
+          //   href: "/inventory/product/category",
+          // },
+          {
+            title: "by color",
+            href: "/inventory/product/color",
+          },
+          {
+            title: "by category",
+            href: "/inventory/product/rack",
+          },
+        ],
+      },
       {
         title: "Category Setting",
         href: undefined,
@@ -190,6 +189,21 @@ const sidebarMenu = [
           {
             title: "repair",
             href: "/inventory/moving-product/repair",
+          },
+        ],
+      },
+      {
+        title: "Stock Opname",
+        href: undefined,
+        icon: <SendToBack className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [
+          {
+            title: "color",
+            href: "/inventory/stock-opname/color",
+          },
+          {
+            title: "category",
+            href: "/inventory/stock-opname/category",
           },
         ],
       },

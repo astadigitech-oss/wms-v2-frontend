@@ -1,15 +1,15 @@
 import React from "react";
 import { Metadata } from "next";
-import { Client } from "./_components/client";
 import { protect } from "@/lib/protect";
 import { redirect } from "next/navigation";
 import { Footer } from "@/components/footer";
+import { Client } from "./_components/client";
 
 export const metadata: Metadata = {
-  title: "Summary Report Product Inbound",
+  title: "Color",
 };
 
-const SummaryReportProductInbound = async () => {
+const ColorPage = async () => {
   const user = await protect();
 
   if (!user) redirect("/login");
@@ -21,4 +21,4 @@ const SummaryReportProductInbound = async () => {
   );
 };
 
-export default SummaryReportProductInbound;
+export default ColorPage;

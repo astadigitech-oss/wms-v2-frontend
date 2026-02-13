@@ -14,7 +14,7 @@ export const useDoneCheckApproveStaging = () => {
   const mutation = useMutation<AxiosResponse, Error, any>({
     mutationFn: async () => {
       const res = await axios.post(
-        `${baseUrl}/stagingTransactionApprove`,
+        `${baseUrl}/stagging-approves`,
         {},
         {
           headers: {

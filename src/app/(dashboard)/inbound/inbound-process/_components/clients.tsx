@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +10,6 @@ import {
   ArrowRight,
   Ban,
   Barcode,
-  Check,
   Disc,
   FileSpreadsheet,
   FileText,
