@@ -3,6 +3,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ButtonSidebar } from "../button-sidebar";
 import {
+  BarChart,
   Blocks,
   Boxes,
   FileCog,
@@ -12,6 +13,7 @@ import {
   PackageSearch,
   RailSymbol,
   SendToBack,
+  ShoppingBasket,
   SquareLibrary,
   Target,
   User,
@@ -33,6 +35,13 @@ const sidebarMenu = [
         href: "/dashboard/storage-report",
         icon: <LineChart className="w-5 h-5 stroke-[1.5]" />,
         query: "storage-report",
+        sub_menu: [],
+      },
+      {
+        title: "List Sale",
+        href: "/dashboard/list-sale",
+        icon: <BarChart className="w-5 h-5 stroke-[1.5]" />,
+        query: "list-sale",
         sub_menu: [],
       },
       // {
@@ -274,89 +283,98 @@ const sidebarMenu = [
   //     },
   //   ],
   // },
-  // {
-  //   id: 6,
-  //   title: "outbond",
-  //   href: undefined,
-  //   menu: [
-  //     {
-  //       title: "migrate color",
-  //       href: undefined,
-  //       icon: <Truck className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [
-  //         {
-  //           title: "List Migrate",
-  //           href: "/outbond/migrate-color/list",
-  //         },
-  //         {
-  //           title: "destination",
-  //           href: "/outbond/migrate-color/destination",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       title: "sale",
-  //       href: "/outbond/sale",
-  //       icon: <ShoppingBasket className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "B2B",
-  //       href: "/outbond/b2b",
-  //       icon: <ScanText className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "buyer",
-  //       href: "/outbond/buyer",
-  //       icon: <BadgeDollarSign className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "Class buyer",
-  //       href: "/outbond/class-buyer",
-  //       icon: <Award className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "QCD",
-  //       href: "/outbond/qcd",
-  //       icon: <Recycle className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "Pallet Bulky",
-  //       href: undefined,
-  //       icon: <SwatchBook className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [
-  //         {
-  //           title: "list Pallet",
-  //           href: "/outbond/pallet/list",
-  //         },
-  //         {
-  //           title: "Category Pallet",
-  //           href: "/outbond/pallet/category-pallet",
-  //         },
-  //         {
-  //           title: "Warehouse",
-  //           href: "/outbond/pallet/warehouse",
-  //         },
-  //         {
-  //           title: "Condition",
-  //           href: "/outbond/pallet/condition",
-  //         },
-  //         {
-  //           title: "Status",
-  //           href: "/outbond/pallet/status",
-  //         },
-  //         {
-  //           title: "Brand",
-  //           href: "/outbond/pallet/brand",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    id: 6,
+    title: "outbond",
+    href: undefined,
+    menu: [
+      // {
+      //   title: "migrate color",
+      //   href: undefined,
+      //   icon: <Truck className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [
+      //     {
+      //       title: "List Migrate",
+      //       href: "/outbond/migrate-color/list",
+      //     },
+      //     {
+      //       title: "destination",
+      //       href: "/outbond/migrate-color/destination",
+      //     },
+      //   ],
+      // },
+      {
+        title: "sale",
+        href: undefined,
+        icon: <ShoppingBasket className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [
+          {
+            title: "list sale",
+            href: "/outbound/sale/list-sale",
+          },
+          {
+            title: "Cashier",
+            href: "/outbound/sale/cashier",
+          },
+        ],
+      },
+      // {
+      //   title: "B2B",
+      //   href: "/outbond/b2b",
+      //   icon: <ScanText className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "buyer",
+      //   href: "/outbond/buyer",
+      //   icon: <BadgeDollarSign className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "Class buyer",
+      //   href: "/outbond/class-buyer",
+      //   icon: <Award className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "QCD",
+      //   href: "/outbond/qcd",
+      //   icon: <Recycle className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "Pallet Bulky",
+      //   href: undefined,
+      //   icon: <SwatchBook className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [
+      //     {
+      //       title: "list Pallet",
+      //       href: "/outbond/pallet/list",
+      //     },
+      //     {
+      //       title: "Category Pallet",
+      //       href: "/outbond/pallet/category-pallet",
+      //     },
+      //     {
+      //       title: "Warehouse",
+      //       href: "/outbond/pallet/warehouse",
+      //     },
+      //     {
+      //       title: "Condition",
+      //       href: "/outbond/pallet/condition",
+      //     },
+      //     {
+      //       title: "Status",
+      //       href: "/outbond/pallet/status",
+      //     },
+      //     {
+      //       title: "Brand",
+      //       href: "/outbond/pallet/brand",
+      //     },
+      //   ],
+      // },
+    ],
+  },
   {
     id: 7,
     title: "Account",
