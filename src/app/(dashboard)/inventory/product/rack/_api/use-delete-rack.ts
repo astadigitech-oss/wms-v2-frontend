@@ -26,7 +26,7 @@ export const useDeleteRack = () => {
     },
     onSuccess: () => {
       toast.success("Rack successfully Deleted");
-      queryClient.invalidateQueries({ queryKey: ["list-racks"] });
+      queryClient.invalidateQueries({ queryKey: ["list-racks-display"] });
       // queryClient.invalidateQueries({
       //   queryKey: ["rack-detail", data.data.data.resource.id],
       // });

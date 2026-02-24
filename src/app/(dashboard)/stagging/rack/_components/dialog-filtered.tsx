@@ -56,8 +56,6 @@ export const DialogFiltered = ({
     return data?.data.data.resource.data.data;
   }, [data]);
 
-  console.log("dataListFiltered:", data);
-
   const dataPriceTotal: any = useMemo(() => {
     return data?.data.data.resource.total_new_price;
   }, [data]);

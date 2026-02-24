@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
@@ -7,19 +8,19 @@ import { getCookie } from "cookies-next/client";
 import { invalidateQuery } from "@/lib/query";
 
 type RequestType = {
-  id: string;
+  barcode: string;
   body: any;
 };
 
 type Error = AxiosError;
 
-export const useUpdateProductStaging = () => {
+export const useUpdateProductDisplay = () => {
   const accessToken = getCookie("accessToken");
   const queryClient = useQueryClient();
 
   const mutation = useMutation<AxiosResponse, Error, RequestType>({
-    mutationFn: async ({ id, body }) => {
-      const res = await axios.put(`${baseUrl}/staging_products/${id}`, body, {
+    mutationFn: async ({ barcode, body }) => {
+      const res = await axios.put(`${baseUrl}/products/${barcode}/update`, body, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -27,8 +28,8 @@ export const useUpdateProductStaging = () => {
       return res;
     },
     onSuccess: () => {
-      toast.success("Product Staging successfully updated");
-      invalidateQuery(queryClient, [["list-staging-product"]]);
+      toast.success("Product display successfully updated");
+      invalidateQuery(queryClient, [["list-display-product"]]);
     },
     onError: (err) => {
       if (err.status === 403) {
@@ -37,9 +38,9 @@ export const useUpdateProductStaging = () => {
         toast.error(
           `ERROR ${err?.status}: ${
             (err?.response?.data as any)?.data?.message
-          } Product Staging failed to update`
+          } Product display failed to update`
         );
-        console.log("ERROR_UPDATE_PRODUCT_STAGING:", err);
+        console.log("ERROR_UPDATE_PRODUCT_DISPLAY:", err);
       }
     },
   });

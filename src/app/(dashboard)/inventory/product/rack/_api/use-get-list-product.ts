@@ -7,7 +7,7 @@ import { getCookie } from "cookies-next/client";
 export const useGetListProduct = ({ p, q }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["list-product-staging", { p, q }],
+    queryKey: ["list-product-display", { p, q }],
     queryFn: async () => {
       const res = await axios.get(`${baseUrl}/products/by-category?page=${p}&q=${q}`, {
         headers: {

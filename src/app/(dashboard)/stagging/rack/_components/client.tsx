@@ -190,8 +190,8 @@ export const Client = () => {
 
   const rackData = dataRacks?.data.data.resource;
   const racksData = rackData?.data;
-  const totalRacks = rackData?.total_racks ?? 0;
-  const totalProductRack = rackData?.total_products_in_racks ?? 0;
+  const totalRacks = rackData?.total_rack ?? 0;
+  const totalProductRack = rackData?.total_product_in_rack ?? 0;
 
   const productData = dataProducts?.data?.data?.resource.data;
   const CategoriesData = useMemo(() => {

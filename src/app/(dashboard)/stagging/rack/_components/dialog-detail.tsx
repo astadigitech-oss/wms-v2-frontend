@@ -81,11 +81,9 @@ export const DialogDetail = ({
     return data?.data.data.resource;
   }, [data]);
 
-  console.log("dataDetail", dataDetail);
-
   const categories: any[] = useMemo(() => {
-    return dataPrice?.data.resource.category ?? [];
-  }, [dataPrice]);
+     return dataPrice?.data.resource.category ?? [];
+   }, [dataPrice]);
 
   const handleUpdate = () => {
     const body = {
@@ -93,7 +91,7 @@ export const DialogDetail = ({
       new_name_product: input.name,
       new_quantity_product: Number(input.qty),
       new_price_product: Number(input.price),
-      category_id: selectedCategory?.id ?? null, 
+      category_id: selectedCategory?.id ?? null,
       discount: Number(input.discount),
       old_price_product: Number(input.oldPrice),
     };
@@ -122,7 +120,7 @@ export const DialogDetail = ({
       return filteredEntries?.[0] ?? "";
     }
   };
-  console.log("categories", categories);
+
   // selected category and its max price (used in confirmation dialog)
   const selectedCategory = categories?.find(
     (item: any) => item.name_category === input.category,
@@ -167,7 +165,7 @@ export const DialogDetail = ({
       }));
     }
   }, [input.discount, input.price]);
-  console.log("displayPrice", input.displayPrice);
+
   useEffect(() => {
     alertError({
       isError,
@@ -181,14 +179,14 @@ export const DialogDetail = ({
   useEffect(() => {
     if (isSuccess && data) {
       setInput({
-        barcode: data?.data.data.resource.barcode ?? "",
-        name: data?.data.data.resource.name ?? "",
-        price: data?.data.data.resource.price ?? "0",
-        qty: data?.data.data.resource.quantity ?? "1",
-        oldBarcode: data?.data.data.resource.old_barcode_product ?? "",
-        oldName: data?.data.data.resource.old_name_product ?? "",
-        oldPrice: data?.data.data.resource.old_price_product ?? "0",
-        oldQty: data?.data.data.resource.old_quantity_product ?? "1",
+        barcode: data?.data.data.resource.new_barcode ?? "",
+        name: data?.data.data.resource.new_name ?? "",
+        price: data?.data.data.resource.new_price ?? "0",
+        qty: data?.data.data.resource.new_quantity ?? "1",
+        oldBarcode: data?.data.data.resource.old_barcode ?? "",
+        oldName: data?.data.data.resource?.old_name ?? "",
+        oldPrice: data?.data.data.resource?.old_price ?? "0",
+        oldQty: data?.data.data.resource?.old_quantity ?? "0",
         category: data?.data.data.resource.category.name_category ?? "",
         discount: data?.data.data.resource.discount ?? "0",
         displayPrice: data?.data.data.resource.display_price ?? "0",
@@ -602,23 +600,23 @@ export const DialogDetail = ({
             </form>
             <div className="w-fit flex flex-none flex-col gap-4">
               {/* {dataDetail?.new_category_product ? (
-                 */}
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center p-2 rounded border bg-gray-100 gap-2 text-sm">
-                    <AlertCircle className="size-4" />
-                    <div className="flex flex-col">
-                      <p>Update Data terlebih dahulu</p>
-                      <p>untuk Barcode terbaru!</p>
-                    </div>
+               */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center p-2 rounded border bg-gray-100 gap-2 text-sm">
+                  <AlertCircle className="size-4" />
+                  <div className="flex flex-col">
+                    <p>Update Data terlebih dahulu</p>
+                    <p>untuk Barcode terbaru!</p>
                   </div>
-                  <BarcodePrinted
-                    barcode={dataDetail?.barcode}
-                    newPrice={dataDetail?.display_price}
-                    oldPrice={dataDetail?.old_price_product}
-                    category={dataDetail?.new_category_product}
-                    discount={dataDetail?.discount_category ?? "0"}
-                  />
                 </div>
+                <BarcodePrinted
+                  barcode={dataDetail?.barcode}
+                  newPrice={dataDetail?.display_price}
+                  oldPrice={dataDetail?.old_price_product}
+                  category={dataDetail?.new_category_product}
+                  discount={dataDetail?.discount_category ?? "0"}
+                />
+              </div>
               {/* // ) : (
               //   <div className="w-auto">
               //     <div className="w-70.5 p-3 flex flex-col gap-3 border border-gray-300 rounded text-sm">

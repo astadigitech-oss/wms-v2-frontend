@@ -21,7 +21,6 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useUpdateProductStaging } from "../_api/use-update-product-staging";
 import { alertError, cn, formatRupiah } from "@/lib/utils";
 import {
   PopoverPortal,
@@ -38,16 +37,11 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import BarcodePrinted from "@/components/barcode";
-import { useGetPriceProductStaging } from "../_api/use-get-price-product-staging";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import useGetDetailProductStaging from "../_api/use-get-detail-product-display";
-
-interface QualityData {
-  lolos: string | null;
-  damaged: string | null;
-  abnormal: string | null;
-}
+import useGetDetailProductDisplay from "../_api/use-get-detail-product-display";
+import { useUpdateProductDisplay } from "../_api/use-update-product-display";
+import { useGetPriceProductDisplay } from "../_api/use-get-price-product-display";
 
 export const DialogDetail = ({
   open,
@@ -61,7 +55,7 @@ export const DialogDetail = ({
   const queryClient = useQueryClient();
   const [isCategory, setIsCategory] = useState(false);
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
-    useUpdateProductStaging();
+    useUpdateProductDisplay();
   const [input, setInput] = useState({
     barcode: "",
     oldBarcode: "",
@@ -76,8 +70,8 @@ export const DialogDetail = ({
     displayPrice: "0",
   });
   const { data, isError, error, isPending, isSuccess } =
-    useGetDetailProductStaging({ id: productId });
-  const { data: dataPrice } = useGetPriceProductStaging({
+    useGetDetailProductDisplay({ id: productId });
+  const { data: dataPrice } = useGetPriceProductDisplay({
     price: input.oldPrice,
   });
   const [showConfirmPrice, setShowConfirmPrice] = useState(false);
@@ -88,8 +82,6 @@ export const DialogDetail = ({
     return data?.data.data.resource;
   }, [data]);
 
-  console.log("dataDetail", dataDetail);
-console.log("dataPrice", dataPrice);
   const categories: any[] = useMemo(() => {
     return dataPrice?.data.resource.category ?? [];
   }, [dataPrice]);
@@ -97,30 +89,19 @@ console.log("dataPrice", dataPrice);
   const handleUpdate = () => {
     const body = {
       code_document: dataDetail?.code_document,
-      old_barcode_product: input.oldBarcode,
-      new_barcode_product: input.barcode,
       new_name_product: input.name,
-      new_quantity_product: input.qty,
-      new_price_product: input.price,
-      old_price_product: input.oldPrice,
-      new_date_in_product: dataDetail?.new_date_in_product,
-      new_status_product: dataDetail?.new_status_product,
-      condition: Object.keys(JSON.parse(dataDetail?.new_quality)).find(
-        (key) =>
-          JSON.parse(dataDetail?.new_quality)[key as keyof QualityData] !==
-          null,
-      ),
-      new_category_product: input.category ?? dataDetail?.new_category_product,
-      new_tag_product: dataDetail?.new_tag_product,
-      display_price: input.displayPrice,
-      new_discount: input.discount,
+      new_quantity_product: Number(input.qty),
+      new_price_product: Number(input.price),
+      category_id: selectedCategory?.id ?? null,
+      discount: Number(input.discount),
+      old_price_product: Number(input.oldPrice),
     };
     mutateUpdate(
-      { id: dataDetail.id, body },
+      { barcode: dataDetail.barcode, body },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ["product-staging-detail", dataDetail.id],
+            queryKey: ["product-display-detail", dataDetail.id],
           });
           onOpenChange();
         },
@@ -482,7 +463,7 @@ console.log("dataPrice", dataPrice);
                             >
                               <p>
                                 {input.category ??
-                                  dataDetail?.new_category_product ?? (
+                                  dataDetail?.category ?? (
                                     <span className="italic underline">
                                       No Category yet.
                                     </span>
@@ -492,7 +473,7 @@ console.log("dataPrice", dataPrice);
                             </Button>
                           </PopoverPortalTrigger>
                           <PopoverPortalContent
-                            className="p-0"
+                            className="p-0 bg-white shadow-md border"
                             style={{
                               width: "var(--radix-popover-trigger-width)",
                             }}
@@ -516,9 +497,8 @@ console.log("dataPrice", dataPrice);
                                           ...prev,
                                           category: item?.name_category ?? "",
                                           price: (
-                                            dataDetail?.old_price_product -
-                                            (dataDetail?.old_price_product /
-                                              100) *
+                                            dataDetail?.old_price -
+                                            (dataDetail?.old_price / 100) *
                                               parseFloat(
                                                 item?.discount_category ?? "0",
                                               )
@@ -607,7 +587,7 @@ console.log("dataPrice", dataPrice);
                   !input.name ||
                   parseFloat(input.oldPrice) < 100000 ||
                   parseFloat(input.qty) === 0 ||
-                  (dataDetail?.old_price_product >= 100000 &&
+                  (dataDetail?.old_price >= 100000 &&
                     !input.category &&
                     findNotNull(dataDetail?.new_quality) === "lolos")
                 }
@@ -618,7 +598,7 @@ console.log("dataPrice", dataPrice);
               </Button>
             </form>
             <div className="w-fit flex flex-none flex-col gap-4">
-              {dataDetail?.new_category_product ? (
+              {dataDetail?.category ? (
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center p-2 rounded border bg-gray-100 gap-2 text-sm">
                     <AlertCircle className="size-4" />
@@ -628,10 +608,10 @@ console.log("dataPrice", dataPrice);
                     </div>
                   </div>
                   <BarcodePrinted
-                    barcode={dataDetail?.new_barcode_product}
-                    newPrice={dataDetail?.display_price}
-                    oldPrice={dataDetail?.old_price_product}
-                    category={dataDetail?.new_category_product}
+                    barcode={dataDetail?.new_barcode}
+                    newPrice={dataDetail?.new_price}
+                    oldPrice={dataDetail?.old_price}
+                    category={dataDetail?.category}
                     discount={dataDetail?.discount_category ?? "0"}
                   />
                 </div>

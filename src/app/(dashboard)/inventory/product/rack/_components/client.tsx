@@ -37,6 +37,8 @@ import DialogBarcode from "./dialog-barcode";
 import { columnProductDisplay, columnRackDisplay } from "./columns";
 import { parseAsString, useQueryState } from "nuqs";
 import { DialogDetail } from "./dialog-detail";
+import { useToDamaged } from "../_api/use-to-damaged";
+import { DialogDamaged } from "./dialog-damaged";
 
 type ViewMode = "rack" | "product";
 
@@ -55,6 +57,11 @@ export const Client = () => {
   const [selectedNameRack, setSelectedNameRack] = useState("");
   const [selectedBarcode, setSelectedBarcode] = useState("");
   const [selectedTotalProduct, setSelectedTotalProduct] = useState("");
+  const [isOpenDamaged, setIsOpenDamaged] = useState(false);
+  const [damagedDescription, setDamagedDescription] = useState("");
+  const [damagedProductId, setDamagedProductId] = useState("");
+  const [damagedBarcode, setDamagedBarcode] = useState("");
+
   // separate search states for rack and product so values don't collide
   const {
     search: searchRack,
@@ -96,13 +103,15 @@ export const Client = () => {
 
   // confirm delete
   const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Rack Stagging",
+    "Delete Rack Display",
     "This action cannot be undone",
     "destructive",
   );
 
   // mutate DELETE, UPDATE, CREATE
   const { mutate: mutateDelete } = useDeleteRack();
+  const { mutate: mutateDamaged, isPending: isPendingDamaged } = useToDamaged();
+
   const {
     data: dataRacks,
     refetch: refetchRacks,
@@ -125,11 +134,31 @@ export const Client = () => {
 
   const rackData = dataRacks?.data.data.resource;
   const racksData = rackData?.data;
-  const totalRacks = rackData?.total_racks ?? 0;
-  const totalProductRack = rackData?.total_products_in_racks ?? 0;
+  const totalRacks = rackData?.total_rack ?? 0;
+  const totalProductRack = rackData?.total_products_in_rack ?? 0;
 
   const productData = dataProducts?.data?.resource?.data;
   const loadingRack = isLoadingRacks || isRefetchingRack;
+
+  // handle to damaged
+  const handleSubmitDamaged = () => {
+    mutateDamaged(
+      {
+        id: damagedBarcode,
+        body: {
+          description: damagedDescription,
+          quality: "damaged",
+        },
+      },
+
+      {
+        onSuccess: () => {
+          setIsOpenDamaged(false);
+          setDamagedDescription("");
+        },
+      },
+    );
+  };
 
   useEffect(() => {
     if (dataRacks) setPagination(dataRacks.data.data.resource);
@@ -177,20 +206,30 @@ export const Client = () => {
         }}
         productId={productId}
       />
+      <DialogDamaged
+        isOpen={isOpenDamaged}
+        handleClose={() => setIsOpenDamaged(false)}
+        barcode={damagedBarcode}
+        description={damagedDescription}
+        setDescription={setDamagedDescription}
+        isLoading={isPendingDamaged}
+        handleSubmit={handleSubmitDamaged}
+        damagedProductId={damagedProductId}
+      />
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>Stagging</BreadcrumbItem>
+          <BreadcrumbItem>Display</BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>Rack</BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <div className="bg-white rounded-xl shadow p-5 flex flex-col gap-2">
         <div className="flex items-center justify-between w-full">
-          <h2 className="text-xl font-semibold">Rak Stagging</h2>
+          <h2 className="text-xl font-semibold">Rak Display</h2>
 
           <Select
             value={viewMode}
@@ -362,9 +401,9 @@ export const Client = () => {
                 isLoadingProducts,
                 setProductId,
                 setIsOpen,
-                // setDamagedProductId,
-                // setDamagedBarcode,
-                // setIsOpenDamaged,
+                setDamagedProductId,
+                setDamagedBarcode,
+                setIsOpenDamaged,
               })}
               data={productData ?? []}
               isLoading={isLoadingProducts}

@@ -4,10 +4,10 @@ import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { getCookie } from "cookies-next/client";
 
-export const useGetPriceProductStaging = ({ price }: any) => {
+export const useGetPriceProductDisplay = ({ price }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["price-product-product-staging", price],
+    queryKey: ["price-product-product-display", price],
     queryFn: async () => {
       const res = await axios.get(
         `${baseUrl}/product-price-colors?old_price=${price}`,
