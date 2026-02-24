@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { Client } from "./_component/client";
 
 export const metadata: Metadata = {
-    title: "B2B",
+    title: "create B2B",
 };
 
 const CreateB2BPage = async () => {
