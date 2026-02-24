@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
 import { setPaginate } from "@/lib/utils";
 import { formatRupiah } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
+// import { ca } from "date-fns/locale";
 // import { format } from "date-fns";
-import { PlusCircle, RefreshCw, ScanLine, Send, Trash2 } from "lucide-react";
+import { BadgePercent, Box, CircleDollarSign, Package, PlusCircle, RefreshCw, ScanLine, Trash2 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
@@ -58,10 +58,9 @@ export const Client = () => {
         {
             barcode: "LQMGT0012",
             product_name: "Kaos Polos Putih",
+            category: "Pakaian",
             qty: 5,
             price: 500000,
-            discount: 0,
-            total: 500000,
         },
     ];
 
@@ -90,6 +89,14 @@ export const Client = () => {
             size: 200,
             cell: ({ row }) => (
                 <div className="break-all">{row.original?.product_name || '-'}</div>
+            ),
+        },
+        {
+            accessorKey: "Category",
+            header: "Category",
+            size: 200,
+            cell: ({ row }) => (
+                <div className="break-all">{row.original?.category || '-'}</div>
             ),
         },
         {
@@ -139,11 +146,9 @@ export const Client = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Outbound</BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/outbound/sale">Sale</BreadcrumbLink>
-                    </BreadcrumbItem>
+                    <BreadcrumbItem>B2B</BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>Cashier</BreadcrumbItem>
+                    <BreadcrumbItem>Create B2B</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
@@ -152,112 +157,72 @@ export const Client = () => {
                         <div className="flex items-center gap-2 bg-sky-500 text-sky-100 px-3 py-2.5 rounded-full border border-sky-300">
                             <ScanLine className="w-5 h-6" />
                         </div>
-                        <span className="font-semibold text-xl">LOMGT0011</span>
+                        <span className="font-semibold text-xl">bag-14-6BC12</span>
                     </div>
                 </div>
             </div>
 
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-4">
-                    {/* Row 2: 3 columns */}
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Buyer</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Buyer"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Buyer Class</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Buyer Class"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">New Buyer Class</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="New Buyer Class"
-                            />
-                        </div>
-                    </div>
-                    {/* Row 3: 4 columns */}
-                    <div className="grid grid-cols-4 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Current Transaction</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Current Transaction"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Next Transaction</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Next Transaction"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Total Payment</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Total Payment"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Total Voucher</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Total Voucher"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Row 4: 2 columns */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Center Box Qty</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Center Box Qty"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Price</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Price"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-4">
-                    {/* Notes Section */}
-                    <div className="flex flex-col w-full gap-2">
-                        <Label className="text-sm font-bold">With PPN</Label>
-                        <Input
-                            className="border-sky-400/80 focus-visible:ring-sky-400"
-                            placeholder="Enter notes..."
-                        />
-                    </div>
-                    {/* Notes Section */}
-                    <div className="flex flex-col w-full gap-2">
-                        <Label className="text-sm font-bold">Grand Total</Label>
-                        <Input
-                            className="border-sky-400/80 focus-visible:ring-sky-400"
-                            placeholder="Enter notes..."
+            {/* Card 2: Bag Row — inputs + Add Bag & Delete Bag */}
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3">
+                <div className="flex items-center gap-3 w-full p-2 flex-wrap">
+                    {/* Input Qty */}
+                    <div className="flex items-center gap-2 border border-gray-200 rounded-md px-3 h-10 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-300 transition-all bg-white">
+                        <Package className="w-6 h-6 text-white fill-sky-500 shrink-0" />
+                        <input
+                            type="number"
+                            defaultValue={1}
+                            className="w-12 text-sm outline-none text-gray-700 bg-transparent"
+                            placeholder="Qty"
                         />
                     </div>
 
-                    {/* Grand Total Section */}
-                    <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
-                        <Send className="w-4 h-4" />
-                        Sale
+                    {/* Input Harga Diskon */}
+                    <div className="flex items-center gap-2 border border-gray-200 rounded-md px-3 h-10 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-300 transition-all bg-white">
+                        <BadgePercent className="w-6 h-6 text-white fill-rose-500 shrink-0" />
+                        <span className="text-xs text-gray-400 shrink-0">Rp</span>
+                        <input
+                            type="text"
+                            defaultValue="1.000.000"
+                            className="w-28 text-sm outline-none text-gray-700 bg-transparent"
+                            placeholder="Harga"
+                        />
+                    </div>
+
+                    {/* Input Harga */}
+                    <div className="flex items-center gap-2 border border-gray-200 rounded-md px-3 h-10 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-300 transition-all bg-white">
+                        <CircleDollarSign className="w-6 h-6 text-white fill-yellow-500 shrink-0" />
+                        <span className="text-xs text-gray-400 shrink-0">Rp</span>
+                        <input
+                            type="text"
+                            defaultValue="900.000"
+                            className="w-28 text-sm outline-none text-gray-700 bg-transparent"
+                            placeholder="Harga Diskon"
+                        />
+                    </div>
+
+                    {/* Input Nama Bag */}
+                    <div className="flex items-center gap-2 border border-gray-200 rounded-md px-3 h-10 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-300 transition-all bg-white">
+                        <Box className="w-6 h-6 text-white fill-emerald-500 shrink-0" />
+                        <input
+                            type="text"
+                            defaultValue="Bag"
+                            className="w-20 text-sm outline-none text-gray-700 bg-transparent"
+                            placeholder="Nama Bag"
+                        />
+                    </div>
+
+                    {/* Buttons */}
+                    <Button
+                        className="items-center h-10 px-5 bg-sky-500 hover:bg-sky-600 text-white"
+                    >
+                        <Box className="w-4 h-4 mr-2" />
+                        Add Bag
+                    </Button>
+                    <Button
+                        className="items-center h-10 px-5 bg-red-500 hover:bg-red-600 text-white"
+                    >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Bag
                     </Button>
                 </div>
             </div>

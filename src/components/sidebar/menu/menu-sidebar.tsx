@@ -12,6 +12,7 @@ import {
   LineChart,
   PackageSearch,
   RailSymbol,
+  ScanText,
   SendToBack,
   ShoppingBasket,
   SquareLibrary,
@@ -305,25 +306,16 @@ const sidebarMenu = [
       // },
       {
         title: "sale",
-        href: undefined,
+        href: "/outbound/sale",
         icon: <ShoppingBasket className="w-5 h-5 stroke-[1.5]" />,
-        sub_menu: [
-          {
-            title: "list sale",
-            href: "/outbound/sale/list-sale",
-          },
-          {
-            title: "Cashier",
-            href: "/outbound/sale/cashier",
-          },
-        ],
+        sub_menu: [],
       },
-      // {
-      //   title: "B2B",
-      //   href: "/outbond/b2b",
-      //   icon: <ScanText className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [],
-      // },
+      {
+        title: "B2B",
+        href: "/outbound/b2b",
+        icon: <ScanText className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
       // {
       //   title: "buyer",
       //   href: "/outbond/buyer",
