@@ -21,6 +21,7 @@ import { formatRupiah } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import Link from "next/link";
 import { PenIcon, PlusCircle, RefreshCw, Trash2 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
@@ -188,8 +189,6 @@ export const Client = () => {
                     <BreadcrumbItem>Outbound</BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Sale</BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>List Sale</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-10 flex-col">
@@ -224,17 +223,17 @@ export const Client = () => {
                             <span> s.d </span>
                             <Input
                                 className="w-2/8 border-sky-400/80 focus-visible:ring-sky-400"
-                            defaultValue={dateRange?.to ? format(dateRange.to, "dd MMMM yyyy") : ""}
+                                defaultValue={dateRange?.to ? format(dateRange.to, "dd MMMM yyyy") : ""}
                             />
                             <Button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                }}
+                                asChild
                                 className="items-center flex-none h-9 w-24 blue border-sky-400/80 text-white hover:text-white disabled:opacity-100 disabled:border-sky-400/80 disabled:pointer-events-auto disabled:cursor-not-allowed"
                                 variant={"outline"}
                             >
-                                <PlusCircle className={"w-4 h-4"} />
-                                Cashier
+                                <Link href="/outbound/sale/cashier">
+                                    <PlusCircle className={"w-4 h-4"} />
+                                    Cashier
+                                </Link>
                             </Button></div>
                     </div>
                     <DataTable
