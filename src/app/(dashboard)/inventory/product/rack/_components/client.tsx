@@ -10,41 +10,19 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  ArrowRightCircle,
-  FileDown,
-  PlusCircle,
-  RefreshCw,
-  Server,
-} from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FileDown, RefreshCw, Server } from "lucide-react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { parseAsString, useQueryState } from "nuqs";
 import { DataTable } from "@/components/data-table";
 import { AxiosError } from "axios";
 import Forbidden from "@/components/403";
 import Loading from "@/app/(dashboard)/loading";
 import { Button } from "@/components/ui/button";
-import dynamic from "next/dynamic";
-import { useGetListRacks } from "../_api/use-get-list-racks";
 import { useSearchQuery } from "@/lib/search";
 import { usePagination } from "@/lib/pagination";
 import { Input } from "@/components/ui/input";
-import { useCreateRack } from "../_api/use-create-rack";
-import { useUpdateRack } from "../_api/use-update-rack";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useDeleteRack } from "../_api/use-delete-rack";
-import { useGetListProduct } from "../_api/use-get-list-product";
 import Pagination from "@/components/pagination";
-import { columnProductStaging, columnRackStaging } from "./columns";
-import { useAddFilterProductStaging } from "../_api/use-add-filter-product-staging";
-import { useExportStagingProduct } from "../_api/use-export-staging-product";
-import { DialogDetail } from "./dialog-detail";
-import { DialogFiltered } from "./dialog-filtered";
-import { useGetListCategories } from "../_api/use-get-list-categories";
-import { useSubmit } from "../_api/use-submit";
-import { useToDamaged } from "../_api/use-to-damaged";
-import { DialogDamaged } from "./dialog-damaged";
 import {
   Select,
   SelectContent,
@@ -52,17 +30,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetListRacks } from "../_api/use-get-list-racks";
+import { useDeleteRack } from "../_api/use-delete-rack";
+import { useGetListProduct } from "../_api/use-get-list-product";
 import DialogBarcode from "./dialog-barcode";
-
-const DialogCreateEdit = dynamic(() => import("./dialog-create-edit"), {
-  ssr: false,
-});
+import { columnProductDisplay, columnRackDisplay } from "./columns";
+import { parseAsString, useQueryState } from "nuqs";
+import { DialogDetail } from "./dialog-detail";
 
 type ViewMode = "rack" | "product";
 
 export const Client = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("rack");
-
   const [isOpen, setIsOpen] = useQueryState(
     "dialog",
     parseAsString.withDefault(""),
@@ -71,20 +50,11 @@ export const Client = () => {
     "id",
     parseAsString.withDefault(""),
   );
-  // rack Id for Edit
-  const [rackId, setRackId] = useQueryState("rackId", {
-    defaultValue: "",
-  });
   const [isMounted, setIsMounted] = useState(false);
   const [barcodeOpen, setBarcodeOpen] = useState(false);
   const [selectedNameRack, setSelectedNameRack] = useState("");
   const [selectedBarcode, setSelectedBarcode] = useState("");
   const [selectedTotalProduct, setSelectedTotalProduct] = useState("");
-  const [isOpenDamaged, setIsOpenDamaged] = useState(false);
-  const [damagedDescription, setDamagedDescription] = useState("");
-  const [damagedProductId, setDamagedProductId] = useState("");
-  const [damagedBarcode, setDamagedBarcode] = useState("");
-
   // separate search states for rack and product so values don't collide
   const {
     search: searchRack,
@@ -97,8 +67,6 @@ export const Client = () => {
     searchValue: searchValueProduct,
     setSearch: setSearchProduct,
   } = useSearchQuery("qProduct");
-
-  const { searchValue: searchValueCategories } = useSearchQuery("qCategories");
 
   // local input state stored at parent level so values survive tab unmounts
   const [searchRackInput, setSearchRackInput] = useState<string>(
@@ -126,21 +94,6 @@ export const Client = () => {
     setPagination: setPaginationProduct,
   } = usePagination("pProduct");
 
-  // data form create edit
-  type InputState = {
-    displayId: string;
-    source: string;
-    name: string;
-    display: { id: string; name: string };
-  };
-
-  const [input, setInput] = useState<InputState>({
-    displayId: "",
-    source: "staging",
-    name: "",
-    display: { id: "", name: "" },
-  });
-
   // confirm delete
   const [DeleteDialog, confirmDelete] = useConfirm(
     "Delete Rack Stagging",
@@ -148,21 +101,8 @@ export const Client = () => {
     "destructive",
   );
 
-  const [ToDisplayDialog, confirmToDisplay] = useConfirm(
-    "To Display Rack",
-    "This action cannot be undone",
-    "destructive",
-  );
-
   // mutate DELETE, UPDATE, CREATE
   const { mutate: mutateDelete } = useDeleteRack();
-  const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateRack();
-  const { mutate: mutateCreate, isPending: isPendingCreate } = useCreateRack();
-  const { mutate: mutateAddFilter } = useAddFilterProductStaging();
-  const { isPending: isPendingExport } = useExportStagingProduct();
-  const { mutate: mutateSubmit, isPending: isPendingSubmit } = useSubmit();
-  const { mutate: mutateDamaged, isPending: isPendingDamaged } = useToDamaged();
-
   const {
     data: dataRacks,
     refetch: refetchRacks,
@@ -183,107 +123,20 @@ export const Client = () => {
     q: searchValueProduct,
   });
 
-  const { data: dataCategories } = useGetListCategories({
-    p: page,
-    q: searchValueCategories,
-  });
-
   const rackData = dataRacks?.data.data.resource;
   const racksData = rackData?.data;
   const totalRacks = rackData?.total_racks ?? 0;
   const totalProductRack = rackData?.total_products_in_racks ?? 0;
 
-  const productData = dataProducts?.data?.data?.resource.data;
-  const CategoriesData = useMemo(() => {
-    return dataCategories?.data.data.resource;
-  }, [dataCategories]);
+  const productData = dataProducts?.data?.resource?.data;
+  const loadingRack = isLoadingRacks || isRefetchingRack;
 
-  const loadingRack =
-    isLoadingRacks || isRefetchingRack || isPendingSubmit || isPendingCreate;
-
-  // handle close
-  const handleClose = () => {
-    setIsOpen("");
-    setRackId(null);
-    setInput((prev) => ({
-      ...prev,
-      displayId: "",
-      display: { id: "", name: "" },
-    }));
-  };
-
-  const handleAddFilter = (id: any) => {
-    mutateAddFilter({ id });
-  };
-
-  // handle create
-  const handleCreate = (e: FormEvent) => {
-    e.preventDefault();
-    const body = {
-      display_rack_id: input.displayId ? Number(input.displayId) : null,
-      source: input.source ?? "staging",
-    };
-    mutateCreate(
-      { body },
-      {
-        onSuccess: () => {
-          handleClose();
-        },
-      },
-    );
-  };
-
-  // handle update
-  const handleUpdate = (e: FormEvent) => {
-    e.preventDefault();
-    const body = {
-      display_rack_id: input.displayId ? Number(input.displayId) : null,
-      name: input.display.name,
-    };
-    mutateUpdate(
-      { id: rackId, body },
-      {
-        onSuccess: () => {
-          handleClose();
-        },
-      },
-    );
-  };
-
-  // handle to damaged
-  const handleSubmitDamaged = () => {
-    mutateDamaged(
-      {
-        id: damagedBarcode,
-        body: {
-          description: damagedDescription,
-          quality: "damaged",
-        },
-      },
-
-      {
-        onSuccess: () => {
-          setIsOpenDamaged(false);
-          setDamagedDescription("");
-        },
-      },
-    );
-  };
-
-  // handle delete
-
-  const handleSubmit = async (id: any) => {
-    const ok = await confirmToDisplay();
-
-    if (!ok) return;
-    mutateSubmit({ id });
-  };
   useEffect(() => {
-    if (dataRacks) setPagination(dataRacks?.data?.data?.resource);
+    if (dataRacks) setPagination(dataRacks.data.data.resource);
   }, [dataRacks]);
 
   useEffect(() => {
-    if (dataProducts) setPaginationProduct(dataProducts?.data?.data?.resource);
+    if (dataProducts) setPaginationProduct(dataProducts.data.resource);
   }, [dataProducts]);
 
   useEffect(() => setIsMounted(true), []);
@@ -300,7 +153,6 @@ export const Client = () => {
   return (
     <div className="flex flex-col bg-gray-100 w-full px-4 py-4 gap-4">
       <DeleteDialog />
-      <ToDisplayDialog />
       <DialogBarcode
         onCloseModal={() => {
           if (barcodeOpen) {
@@ -324,42 +176,6 @@ export const Client = () => {
           }
         }}
         productId={productId}
-      />
-      <DialogFiltered
-        open={isOpen === "filtered"}
-        onOpenChange={() => {
-          if (isOpen === "filtered") {
-            setIsOpen("");
-          }
-        }}
-      />
-      <DialogDamaged
-        isOpen={isOpenDamaged}
-        handleClose={() => setIsOpenDamaged(false)}
-        barcode={damagedBarcode}
-        description={damagedDescription}
-        setDescription={setDamagedDescription}
-        isLoading={isPendingDamaged}
-        handleSubmit={handleSubmitDamaged}
-        damagedProductId={damagedProductId}
-      />
-      <DialogCreateEdit
-        open={isOpen === "create-edit"}
-        onOpenChange={() => {
-          if (isOpen === "create-edit") {
-            setIsOpen("");
-            setRackId("");
-          }
-        }}
-        rackId={rackId} // rackId
-        input={input} // input form
-        setInput={setInput} // setInput Form
-        categories={CategoriesData?.data ?? CategoriesData}
-        // categories={uniqueCategoryList} // unique categories
-        handleCreate={handleCreate} // handle create rack
-        handleUpdate={handleUpdate} // handle update rack
-        isPendingCreate={isPendingCreate} // loading create
-        isPendingUpdate={isPendingUpdate} // loading update
       />
       <Breadcrumb>
         <BreadcrumbList>
@@ -494,33 +310,15 @@ export const Client = () => {
 
           {/* RIGHT */}
           <div className="flex items-center gap-3">
-            {viewMode === "rack" && (
-              <Button
-                onClick={() => setIsOpen("create-edit")}
-                className="bg-[#0B91FF] text-white hover:bg-blue-500 focus:bg-[#0B91FF]"
-              >
-                <PlusCircle className="w-4 h-4 mr-2" />
-                Add Rack
-              </Button>
-            )}
-
             {viewMode === "product" && (
               <>
                 <Button
                   // onClick={handleExport}
                   variant="outline"
-                  disabled={isPendingExport}
+                  //   disabled={isPendingExport}
                 >
                   <FileDown className="w-4 h-4 mr-2" />
                   Export
-                </Button>
-
-                <Button
-                  onClick={() => setIsOpen("filtered")}
-                  className="bg-[#0B91FF] text-white"
-                >
-                  Filter
-                  <ArrowRightCircle className="w-4 h-4 ml-2" />
                 </Button>
               </>
             )}
@@ -531,17 +329,17 @@ export const Client = () => {
         {viewMode === "rack" ? (
           <>
             <DataTable
-              columns={columnRackStaging({
+              columns={columnRackDisplay({
                 metaPage,
                 isLoadingRacks,
                 handleDelete: (id: any) =>
                   confirmDelete().then((ok) => ok && mutateDelete({ id })),
                 // handleSubmit: mutateSubmit,
-                handleSubmit,
-                handleUpdate,
-                setRackId,
-                setInput,
-                setIsOpen,
+                // handleSubmit,
+                // handleUpdate,
+                // setRackId,
+                // setInput,
+                // setIsOpen,
                 setSelectedBarcode,
                 setSelectedNameRack,
                 setSelectedTotalProduct,
@@ -559,15 +357,14 @@ export const Client = () => {
         ) : (
           <>
             <DataTable
-              columns={columnProductStaging({
+              columns={columnProductDisplay({
                 metaPageProduct,
                 isLoadingProducts,
-                handleAddFilter,
                 setProductId,
                 setIsOpen,
-                setDamagedProductId,
-                setDamagedBarcode,
-                setIsOpenDamaged,
+                // setDamagedProductId,
+                // setDamagedBarcode,
+                // setIsOpenDamaged,
               })}
               data={productData ?? []}
               isLoading={isLoadingProducts}

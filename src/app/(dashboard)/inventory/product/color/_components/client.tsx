@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -12,30 +13,75 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
-import { formatRupiah } from "@/lib/utils";
+import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
-import { ReceiptText, RefreshCw, Trash2 } from "lucide-react";
-import { parseAsInteger, useQueryState } from "nuqs";
+import { Loader2, ReceiptText, RefreshCw, Trash2 } from "lucide-react";
+import { parseAsBoolean, parseAsInteger, useQueryState } from "nuqs";
 import { useMemo } from "react";
 import { useGetListProductColorWMS } from "../_api/use-get-list-product-color-wms";
 import { Badge } from "@/components/ui/badge";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteProductColor } from "../_api/use-delete-product-color";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import DialogDetail from "./dialog-detail";
+import { useGetProductColorDetail } from "../_api/use-get-product-color-detail";
 
 export const Client = () => {
+  const queryClient = useQueryClient();
+
   // search WMS
   const [dataSearchWMS] = useQueryState("q", {
     defaultValue: "",
   });
   const searchValueWMS = useDebounce(dataSearchWMS);
-  const [pageWMS] = useQueryState(
-    "p",
-    parseAsInteger.withDefault(1),
+  const [pageWMS] = useQueryState("p", parseAsInteger.withDefault(1));
+  // dialog edit
+  const [openDialog, setOpenDialog] = useQueryState(
+    "dialog",
+    parseAsBoolean.withDefault(false),
   );
+
+  // color ID Edit
+  const [productId, setProductId] = useQueryState("productId", {
+    defaultValue: "",
+  });
+
+  // mutate DELETE, UPDATE, CREATE
+  const { mutate: mutateDelete, isPending: isPendingDelete } =
+    useDeleteProductColor();
 
   // data WMS
   const {
     data: dataWMS,
-  } = useGetListProductColorWMS({ p: pageWMS, q: searchValueWMS });
+    refetch,
+    isRefetching,
+    isLoading,
+  } = useGetListProductColorWMS({
+    p: pageWMS,
+    q: searchValueWMS,
+  });
+
+  // data detail
+  const {
+    data: dataProduct,
+    isLoading: isLoadingProduct,
+    isError: isErrorProduct,
+    error: errorProduct,
+  } = useGetProductColorDetail({ id: productId });
+
+  // data RES memo WMS
+  const dataDetail: any = useMemo(() => {
+    return dataProduct?.data.data.resource;
+  }, [dataProduct]);
+
+  // dialog delete
+  const [DeleteDialog, confirmDelete] = useConfirm(
+    `Delete Product Color`,
+    "This action cannot be undone",
+    "destructive",
+  );
 
   // data RES memo WMS
   const dataResWMS: any = useMemo(() => {
@@ -43,6 +89,39 @@ export const Client = () => {
   }, [dataWMS]);
 
   console.log("dataResWMS", dataResWMS);
+
+  // handle delete color
+  const handleDelete = async (id: any) => {
+    const ok = await confirmDelete();
+
+    if (!ok) return;
+
+    mutateDelete(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success(`Product Color successfully deleted`);
+          queryClient.invalidateQueries({
+            queryKey: ["list-product-color-wms"],
+          });
+          // queryClient.invalidateQueries({
+          //   queryKey: ["product-color-detail", data.data.data.resource.id],
+          // });
+        },
+        onError: (err) => {
+          if (err.status === 403) {
+            toast.error(`Error 403: Restricted Access`);
+          } else {
+            toast.error(
+              `ERROR ${err?.status}: Product Color 
+              } failed to delete`,
+            );
+            console.log(`ERROR_PRODUCT_COLOR_DELETED:`, err);
+          }
+        },
+      },
+    );
+  };
 
   const columnSummaryColor: ColumnDef<any>[] = [
     {
@@ -81,9 +160,9 @@ export const Client = () => {
         <div className="tabular-nums">{formatRupiah(row.original.price)}</div>
       ),
     },
-     {
+    {
       accessorKey: "status",
-      header: "Status", 
+      header: "Status",
       cell: ({ row }) => (
         <Badge className="bg-sky-400/80 hover:bg-sky-400/80 text-black font-normal capitalize">
           {row.original.status}
@@ -93,41 +172,41 @@ export const Client = () => {
     {
       accessorKey: "action",
       header: () => <div className="text-center">Action</div>,
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex gap-4 justify-center items-center">
           <TooltipProviderPage value={<p>Detail</p>}>
             <Button
               className="items-center w-9 px-0 flex-none h-9 border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50 disabled:opacity-100 disabled:hover:bg-sky-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
               variant={"outline"}
-              // disabled={isLoadingProduct}
-              // onClick={(e) => {
-              //   e.preventDefault();
-              //   setProductId(row.original.id);
-              //   setOpenDialog(true);
-              // }}
+              disabled={isLoading}
+              onClick={(e) => {
+                e.preventDefault();
+                setProductId(row.original.id);
+                setOpenDialog(true);
+              }}
             >
-              {/* {isLoadingProduct ? (
+              {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
-              ) : ( */}
-              <ReceiptText className="w-4 h-4" />
-              {/* )} */}
+              ) : (
+                <ReceiptText className="w-4 h-4" />
+              )}
             </Button>
           </TooltipProviderPage>
           <TooltipProviderPage value={<p>Delete</p>}>
             <Button
               className="items-center w-9 px-0 flex-none h-9 border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50 disabled:opacity-100 disabled:hover:bg-red-50 disabled:pointer-events-auto disabled:cursor-not-allowed"
               variant={"outline"}
-              // disabled={isPendingDelete}
-              // onClick={(e) => {
-              //   e.preventDefault();
-              //   handleDelete(row.original.id);
-              // }}
+              disabled={isPendingDelete}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete(row.original.id);
+              }}
             >
-              {/* {isPendingDelete ? (
+              {isPendingDelete ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
-              ) : ( */}
-              <Trash2 className="w-4 h-4" />
-              {/* )} */}
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
             </Button>
           </TooltipProviderPage>
         </div>
@@ -137,6 +216,17 @@ export const Client = () => {
 
   return (
     <div className="flex flex-col bg-gray-100 w-full px-4 py-4 gap-4">
+      <DeleteDialog />
+      <DialogDetail
+        open={openDialog}
+        onCloseModal={() => {
+          if (openDialog) {
+            setOpenDialog(false);
+          }
+        }}
+        data={dataDetail}
+        isLoading={isLoadingProduct}
+      />
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -196,12 +286,15 @@ export const Client = () => {
               />
               <TooltipProviderPage value={"Reload Data"}>
                 <Button
-                  // onClick={() => refetchAPK()}
+                  onClick={() => refetch()}
                   className="items-center w-9 px-0 flex-none h-9 border-sky-400 text-black hover:bg-sky-50"
                   variant={"outline"}
                 >
                   <RefreshCw
-                  // className={cn("w-4 h-4", loadingAPK ? "animate-spin" : "")}
+                    className={cn(
+                      "w-4 h-4",
+                      isRefetching ? "animate-spin" : "",
+                    )}
                   />
                 </Button>
               </TooltipProviderPage>
@@ -210,7 +303,7 @@ export const Client = () => {
           <DataTable
             columns={columnSummaryColor}
             data={dataResWMS ?? []}
-            // isLoading={loadingAPK}
+            isLoading={isLoading || isRefetching}
           />
           {/* <Pagination
             pagination={{ ...metaPageAPK, current: pageAPK }}

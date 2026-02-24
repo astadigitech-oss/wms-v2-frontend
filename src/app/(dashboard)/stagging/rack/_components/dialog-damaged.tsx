@@ -26,6 +26,7 @@ export const DialogDamaged = ({
   setDescription: (v: string) => void;
   isLoading: boolean;
   handleSubmit: () => void;
+  damagedProductId: string;
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

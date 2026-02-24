@@ -251,9 +251,9 @@ export const Client = () => {
           <div className="flex gap-2">
             {dataStorage && (
               <p className="px-5 h-10 border rounded flex items-center text-sm border-gray-500 cursor-default">
-                {dataStorage?.month.current_month.month +
+                {dataStorage?.month?.current_month?.month +
                   " " +
-                  dataStorage?.month.current_month.year}
+                  dataStorage?.month?.current_month?.year}
               </p>
             )}
             <button
