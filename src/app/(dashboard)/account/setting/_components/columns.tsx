@@ -78,20 +78,20 @@ export const columnDestinationMC = ({
     header: "Role",
   },
   {
-    accessorKey: "format_barcode_name",
-    header: () => <div className="text-center">Format</div>,
+    accessorKey: "total_scan_today",
+    header: () => <div className="text-center">Total Scan Today</div>,
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.format_barcode_name ?? "-"}
+        {row.original.total_scan_today?.toLocaleString() ?? "-"}
       </div>
     ),
   },
-  {
-    accessorKey: "total_scans",
+    {
+    accessorKey: "total_scan",
     header: () => <div className="text-center">Total Scan</div>,
     cell: ({ row }) => (
       <div className="text-center">
-        {row.original.total_scans?.toLocaleString() ?? "-"}
+        {row.original.total_scan?.toLocaleString() ?? "-"}
       </div>
     ),
   },

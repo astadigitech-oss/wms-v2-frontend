@@ -14,13 +14,13 @@ import {
   Circle,
   Loader,
   Minus,
+  Palette,
   Plus,
   X,
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useUpdateProductStaging } from "../_api/use-update-product-staging";
 import { alertError, cn, formatRupiah } from "@/lib/utils";
 import {
   PopoverPortal,
@@ -37,10 +37,11 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import BarcodePrinted from "@/components/barcode";
-import { useGetPriceProductStaging } from "../_api/use-get-price-product-staging";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import useGetDetailProductStaging from "../_api/use-get-detail-product-staging";
+import useGetDetailProductDisplay from "../_api/use-get-detail-product-display";
+import { useUpdateProductDisplay } from "../_api/use-update-product-display";
+import { useGetPriceProductDisplay } from "../_api/use-get-price-product-display";
 
 export const DialogDetail = ({
   open,
@@ -54,7 +55,7 @@ export const DialogDetail = ({
   const queryClient = useQueryClient();
   const [isCategory, setIsCategory] = useState(false);
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
-    useUpdateProductStaging();
+    useUpdateProductDisplay();
   const [input, setInput] = useState({
     barcode: "",
     oldBarcode: "",
@@ -69,8 +70,8 @@ export const DialogDetail = ({
     displayPrice: "0",
   });
   const { data, isError, error, isPending, isSuccess } =
-    useGetDetailProductStaging({ id: productId });
-  const { data: dataPrice } = useGetPriceProductStaging({
+    useGetDetailProductDisplay({ id: productId });
+  const { data: dataPrice } = useGetPriceProductDisplay({
     price: input.oldPrice,
   });
   const [showConfirmPrice, setShowConfirmPrice] = useState(false);
@@ -82,8 +83,8 @@ export const DialogDetail = ({
   }, [data]);
 
   const categories: any[] = useMemo(() => {
-     return dataPrice?.data.resource.category ?? [];
-   }, [dataPrice]);
+    return dataPrice?.data.resource.category ?? [];
+  }, [dataPrice]);
 
   const handleUpdate = () => {
     const body = {
@@ -95,13 +96,12 @@ export const DialogDetail = ({
       discount: Number(input.discount),
       old_price_product: Number(input.oldPrice),
     };
-
     mutateUpdate(
       { barcode: dataDetail.barcode, body },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ["product-staging-detail", dataDetail.id],
+            queryKey: ["product-display-detail", dataDetail.id],
           });
           onOpenChange();
         },
@@ -463,7 +463,7 @@ export const DialogDetail = ({
                             >
                               <p>
                                 {input.category ??
-                                  dataDetail?.new_category_product ?? (
+                                  dataDetail?.category ?? (
                                     <span className="italic underline">
                                       No Category yet.
                                     </span>
@@ -473,7 +473,7 @@ export const DialogDetail = ({
                             </Button>
                           </PopoverPortalTrigger>
                           <PopoverPortalContent
-                            className="p-0"
+                            className="p-0 bg-white shadow-md border"
                             style={{
                               width: "var(--radix-popover-trigger-width)",
                             }}
@@ -497,9 +497,8 @@ export const DialogDetail = ({
                                           ...prev,
                                           category: item?.name_category ?? "",
                                           price: (
-                                            dataDetail?.old_price_product -
-                                            (dataDetail?.old_price_product /
-                                              100) *
+                                            dataDetail?.old_price -
+                                            (dataDetail?.old_price / 100) *
                                               parseFloat(
                                                 item?.discount_category ?? "0",
                                               )
@@ -588,7 +587,7 @@ export const DialogDetail = ({
                   !input.name ||
                   parseFloat(input.oldPrice) < 100000 ||
                   parseFloat(input.qty) === 0 ||
-                  (dataDetail?.old_price_product >= 100000 &&
+                  (dataDetail?.old_price >= 100000 &&
                     !input.category &&
                     findNotNull(dataDetail?.new_quality) === "lolos")
                 }
@@ -599,35 +598,34 @@ export const DialogDetail = ({
               </Button>
             </form>
             <div className="w-fit flex flex-none flex-col gap-4">
-              {/* {dataDetail?.new_category_product ? (
-               */}
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center p-2 rounded border bg-gray-100 gap-2 text-sm">
-                  <AlertCircle className="size-4" />
-                  <div className="flex flex-col">
-                    <p>Update Data terlebih dahulu</p>
-                    <p>untuk Barcode terbaru!</p>
+              {dataDetail?.category ? (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center p-2 rounded border bg-gray-100 gap-2 text-sm">
+                    <AlertCircle className="size-4" />
+                    <div className="flex flex-col">
+                      <p>Update Data terlebih dahulu</p>
+                      <p>untuk Barcode terbaru!</p>
+                    </div>
+                  </div>
+                  <BarcodePrinted
+                    barcode={dataDetail?.new_barcode}
+                    newPrice={dataDetail?.new_price}
+                    oldPrice={dataDetail?.old_price}
+                    category={dataDetail?.category}
+                    discount={dataDetail?.discount_category ?? "0"}
+                  />
+                </div>
+              ) : (
+                <div className="w-auto">
+                  <div className="w-70.5 p-3 flex flex-col gap-3 border border-gray-300 rounded text-sm">
+                    <div className="flex items-center text-sm font-semibold border-b border-gray-300 pb-2">
+                      <Palette className="w-4 h-4 mr-2" />
+                      <p>Color</p>
+                    </div>
+                    <p className="pl-6">{dataDetail?.new_tag_product}</p>
                   </div>
                 </div>
-                <BarcodePrinted
-                  barcode={dataDetail?.barcode}
-                  newPrice={dataDetail?.display_price}
-                  oldPrice={dataDetail?.old_price_product}
-                  category={dataDetail?.new_category_product}
-                  discount={dataDetail?.discount_category ?? "0"}
-                />
-              </div>
-              {/* // ) : (
-              //   <div className="w-auto">
-              //     <div className="w-70.5 p-3 flex flex-col gap-3 border border-gray-300 rounded text-sm">
-              //       <div className="flex items-center text-sm font-semibold border-b border-gray-300 pb-2">
-              //         <Palette className="w-4 h-4 mr-2" />
-              //         <p>Color</p>
-              //       </div>
-              //       <p className="pl-6">{dataDetail?.new_tag_product}</p>
-              //     </div>
-              //   </div>
-              // )} */}
+              )}
             </div>
           </div>
         )}

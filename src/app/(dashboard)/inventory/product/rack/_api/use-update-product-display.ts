@@ -1,23 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { toast } from "sonner";
 import { getCookie } from "cookies-next/client";
+import { invalidateQuery } from "@/lib/query";
 
 type RequestType = {
-  id: any;
+  barcode: string;
+  body: any;
 };
 
 type Error = AxiosError;
 
-export const useDeleteHistory = () => {
+export const useUpdateProductDisplay = () => {
   const accessToken = getCookie("accessToken");
   const queryClient = useQueryClient();
 
   const mutation = useMutation<AxiosResponse, Error, RequestType>({
-    mutationFn: async ({ id }) => {
-      const res = await axios.delete(`${baseUrl}/historys/${id}`, {
+    mutationFn: async ({ barcode, body }) => {
+      const res = await axios.put(`${baseUrl}/products/${barcode}/update`, body, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -25,15 +28,19 @@ export const useDeleteHistory = () => {
       return res;
     },
     onSuccess: () => {
-      toast.success("History successfully deleted");
-      queryClient.invalidateQueries({ queryKey: ["check-history"] });
+      toast.success("Product display successfully updated");
+      invalidateQuery(queryClient, [["list-display-product"]]);
     },
     onError: (err) => {
       if (err.status === 403) {
         toast.error(`Error 403: Restricted Access`);
       } else {
-        toast.error(`ERROR ${err?.status}: History failed to delete`);
-        console.log("ERROR_DELETE_HISTORY:", err);
+        toast.error(
+          `ERROR ${err?.status}: ${
+            (err?.response?.data as any)?.data?.message
+          } Product display failed to update`
+        );
+        console.log("ERROR_UPDATE_PRODUCT_DISPLAY:", err);
       }
     },
   });

@@ -53,10 +53,8 @@ export const DialogFiltered = ({
     isPendingDoneCheckAll || isPendingRemoveFilter || isRefetching || isPending;
 
   const dataListFiltered: any[] = useMemo(() => {
-    return data?.data.data.resource.data;
+    return data?.data.data.resource.data.data;
   }, [data]);
-
-  console.log("dataListFiltered:", data);
 
   const dataPriceTotal: any = useMemo(() => {
     return data?.data.data.resource.total_new_price;

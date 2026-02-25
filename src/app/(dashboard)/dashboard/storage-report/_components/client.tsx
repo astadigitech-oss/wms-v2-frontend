@@ -57,10 +57,10 @@ import { format } from "date-fns";
 import { useExportStorageReportByMonthByYear } from "../_api/use-export-storage-report-by-month-by-year";
 
 interface ChartData {
-  category_product: string;
-  total_category: number;
+  category_name: string;
+  total_product: number;
   total_price_category: string;
-  days_since_created: string;
+  // days_since_created: string;
 }
 
 const ContentTooltip = ({
@@ -70,12 +70,12 @@ const ContentTooltip = ({
 }: {
   active: boolean | undefined;
   payload: any;
-  label: string;
+  label: string | number | undefined;
 }) => {
   if (active && payload && label) {
     return (
       <div className="bg-white rounded px-3 py-1.5 border border-gray-300 text-xs dark:bg-gray-900 shadow-sm">
-        <p className="text-sm font-bold">{label}</p>
+        <p className="text-sm font-bold">{String(label)}</p>
         <div className="mb-2 bg-gray-500 dark:bg-gray-300 w-full h-px" />
         <div className="flex flex-col gap-1">
           {
@@ -108,20 +108,18 @@ export const columnsStorage: ColumnDef<any>[] = [
     ),
   },
   {
-    accessorKey: "category_product",
+    accessorKey: "category_name",
     header: "Category Name",
     cell: ({ row }) => (
-      <div className="break-all max-w-500px">
-        {row.original.category_product}
-      </div>
+      <div className="break-all max-w-500px">{row.original.category_name}</div>
     ),
   },
   {
-    accessorKey: "total_category",
+    accessorKey: "total_product",
     header: () => <div className="text-center">Total Product</div>,
     cell: ({ row }) => (
       <div className="text-center tabular-nums">
-        {row.original.total_category}
+        {row.original.total_product}
       </div>
     ),
   },
@@ -160,19 +158,19 @@ export const Client = () => {
   }, [data]);
 
   const dataChart: ChartData[] = useMemo(() => {
-    return data?.data?.resource?.chart?.category;
+    return data?.data?.resource?.chart?.inventories;
   }, [data]);
 
   const dataChartStaging: ChartData[] = useMemo(() => {
-    return data?.data?.resource?.chart_staging?.category;
+    return data?.data?.resource?.chart?.stagings;
   }, [data]);
 
   const dataChartDump: ChartData[] = useMemo(() => {
-    return data?.data?.resource?.chart_dump?.category;
+    return data?.data?.resource?.chart?.dump;
   }, [data]);
 
   const dataChartScrapQcd: ChartData[] = useMemo(() => {
-    return data?.data?.resource?.chart_scrap_qcd?.category;
+    return data?.data?.resource?.chart?.qcd;
   }, [data]);
 
   const clearSearch = (e: MouseEvent<HTMLButtonElement>) => {
@@ -209,7 +207,7 @@ export const Client = () => {
           onError: () => {
             alert("An error occurred while exporting the report.");
           },
-        }
+        },
       );
     } else {
       alert("Please select both month and year.");
@@ -251,9 +249,9 @@ export const Client = () => {
           <div className="flex gap-2">
             {dataStorage && (
               <p className="px-5 h-10 border rounded flex items-center text-sm border-gray-500 cursor-default">
-                {dataStorage?.month.current_month.month +
+                {dataStorage?.month.month +
                   " " +
-                  dataStorage?.month.current_month.year}
+                  dataStorage?.month.year}
               </p>
             )}
             <button
@@ -331,7 +329,7 @@ export const Client = () => {
             {/* <ExportByMonthYearButton /> */}
           </div>
         </div>
-        <div className="h-75 w-full relative">
+        <div className="h-[300px] w-full relative">
           {loading ? (
             <div className="w-full h-full absolute top-0 left-0 bg-sky-500/15 backdrop-blur z-10 rounded flex justify-center items-center border border-sky-500">
               <Loader className="w-7 h-7 animate-spin" />
@@ -356,14 +354,14 @@ export const Client = () => {
                 />
                 <YAxis
                   padding={{ top: 10 }}
-                  dataKey={"total_category"}
+                  dataKey={"total_product"}
                   style={{ fontSize: "14px" }}
                   tick={false}
                   width={0}
                   axisLine={false}
                 />
                 <XAxis
-                  dataKey="category_product"
+                  dataKey="category_name"
                   stroke="#000"
                   label={{ fontSize: "10px", color: "#fff" }}
                   padding={{ left: 0, right: 0 }}
@@ -377,12 +375,12 @@ export const Client = () => {
                     <ContentTooltip
                       active={active}
                       payload={payload}
-                      label={label as string}
+                      label={label}
                     />
                   )}
                 />
                 <Bar
-                  dataKey="total_category"
+                  dataKey="total_product"
                   fill="#7dd3fc"
                   strokeWidth={2}
                   stroke="#38bdf8"
@@ -399,13 +397,13 @@ export const Client = () => {
             Report Product Per-Category (Staging)
           </h2>
         </div>
-        <div className="h-75 w-full relative">
+        <div className="h-[300px] w-full relative">
           {loading ? (
             <div className="w-full h-full absolute top-0 left-0 bg-sky-500/15 backdrop-blur z-10 rounded flex justify-center items-center border border-sky-500">
               <Loader className="w-7 h-7 animate-spin" />
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height="100%">
+             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={dataChartStaging}
                 margin={{
@@ -424,14 +422,14 @@ export const Client = () => {
                 />
                 <YAxis
                   padding={{ top: 10 }}
-                  dataKey={"total_category"}
+                  dataKey={"total_product"}
                   style={{ fontSize: "14px" }}
                   tick={false}
                   width={0}
                   axisLine={false}
                 />
                 <XAxis
-                  dataKey="category_product"
+                  dataKey="category_name"
                   stroke="#000"
                   label={{ fontSize: "10px", color: "#fff" }}
                   padding={{ left: 0, right: 0 }}
@@ -445,12 +443,12 @@ export const Client = () => {
                     <ContentTooltip
                       active={active}
                       payload={payload}
-                      label={label as string}
+                      label={label}
                     />
                   )}
                 />
                 <Bar
-                  dataKey="total_category"
+                  dataKey="total_product"
                   fill="#7dd3fc"
                   strokeWidth={2}
                   stroke="#38bdf8"
@@ -465,7 +463,7 @@ export const Client = () => {
         <div className="w-full justify-between items-center flex mb-5">
           <h2 className="text-xl font-bold">Report Product Dump</h2>
         </div>
-        <div className="h-75 w-full relative">
+        <div className="h-[300px] w-full relative">
           {loading ? (
             <div className="w-full h-full absolute top-0 left-0 bg-sky-500/15 backdrop-blur z-10 rounded flex justify-center items-center border border-sky-500">
               <Loader className="w-7 h-7 animate-spin" />
@@ -490,14 +488,14 @@ export const Client = () => {
                 />
                 <YAxis
                   padding={{ top: 10 }}
-                  dataKey={"total_category"}
+                  dataKey={"total_product"}
                   style={{ fontSize: "14px" }}
                   tick={false}
                   width={0}
                   axisLine={false}
                 />
                 <XAxis
-                  dataKey="category_product"
+                  dataKey="category_name"
                   stroke="#000"
                   label={{ fontSize: "10px", color: "#fff" }}
                   padding={{ left: 0, right: 0 }}
@@ -511,12 +509,12 @@ export const Client = () => {
                     <ContentTooltip
                       active={active}
                       payload={payload}
-                      label={label as string}
+                      label={label}
                     />
                   )}
                 />
                 <Bar
-                  dataKey="total_category"
+                  dataKey="total_product"
                   fill="#7dd3fc"
                   strokeWidth={2}
                   stroke="#38bdf8"
@@ -531,7 +529,7 @@ export const Client = () => {
         <div className="w-full justify-between items-center flex mb-5">
           <h2 className="text-xl font-bold">Report Product Scrap Qcd</h2>
         </div>
-        <div className="h-75 w-full relative">
+        <div className="h-[300px] w-full relative">
           {loading ? (
             <div className="w-full h-full absolute top-0 left-0 bg-sky-500/15 backdrop-blur z-10 rounded flex justify-center items-center border border-sky-500">
               <Loader className="w-7 h-7 animate-spin" />
@@ -556,14 +554,14 @@ export const Client = () => {
                 />
                 <YAxis
                   padding={{ top: 10 }}
-                  dataKey={"total_category"}
+                  dataKey={"total_product"}
                   style={{ fontSize: "14px" }}
                   tick={false}
                   width={0}
                   axisLine={false}
                 />
                 <XAxis
-                  dataKey="category_product"
+                  dataKey="category_name"
                   stroke="#000"
                   label={{ fontSize: "10px", color: "#fff" }}
                   padding={{ left: 0, right: 0 }}
@@ -577,12 +575,78 @@ export const Client = () => {
                     <ContentTooltip
                       active={active}
                       payload={payload}
-                      label={label as string}
+                      label={label}
                     />
                   )}
                 />
                 <Bar
-                  dataKey="total_category"
+                  dataKey="total_product"
+                  fill="#7dd3fc"
+                  strokeWidth={2}
+                  stroke="#38bdf8"
+                  radius={[4, 4, 4, 4]}
+                  label={{ position: "top", fill: "black" }}
+                  activeBar={{ fill: "#38bdf8" }}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+        <div className="w-full justify-between items-center flex mb-5">
+          <h2 className="text-xl font-bold">Report Product B2B</h2>
+        </div>
+        <div className="h-[300px] w-full relative">
+          {loading ? (
+            <div className="w-full h-full absolute top-0 left-0 bg-sky-500/15 backdrop-blur z-10 rounded flex justify-center items-center border border-sky-500">
+              <Loader className="w-7 h-7 animate-spin" />
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={dataChart}
+                margin={{
+                  top: 5,
+                  right: 10,
+                  left: 30,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid
+                  vertical={false}
+                  className="stroke-gray-200"
+                  horizontalCoordinatesGenerator={(props) =>
+                    props.height > 250 ? [75, 125, 175, 225] : [100, 200]
+                  }
+                />
+                <YAxis
+                  padding={{ top: 10 }}
+                  dataKey={"total_product"}
+                  style={{ fontSize: "14px" }}
+                  tick={false}
+                  width={0}
+                  axisLine={false}
+                />
+                <XAxis
+                  dataKey="category_name"
+                  stroke="#000"
+                  label={{ fontSize: "10px", color: "#fff" }}
+                  padding={{ left: 0, right: 0 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: "10px", height: "20px" }}
+                />
+                <Tooltip
+                  cursor={false}
+                  content={({ active, payload, label }) => (
+                    <ContentTooltip
+                      active={active}
+                      payload={payload}
+                      label={label}
+                    />
+                  )}
+                />
+                <Bar
+                  dataKey="total_product"
                   fill="#7dd3fc"
                   strokeWidth={2}
                   stroke="#38bdf8"
@@ -665,15 +729,15 @@ export const Client = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-semibold">
-                      {dataStorage?.total_product_display.toLocaleString()}
+                      {dataStorage?.total_display.toLocaleString()}
                     </span>
                     <div className="flex items-center text-sky-600 text-xs font-medium border py-0.5 px-2 rounded-full border-sky-600">
-                      <span>{dataStorage?.percentage_product_display}%</span>
+                      <span>{dataStorage?.percentage_display}%</span>
                     </div>
                   </div>
                 </div>
                 <Progress
-                  value={dataStorage?.percentage_product_display}
+                  value={dataStorage?.percentage_display}
                   className="h-1.5 bg-gray-200"
                 />
               </div>
@@ -689,23 +753,21 @@ export const Client = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-semibold">
-                      {formatRupiah(dataStorage?.total_product_display_price)}
+                      {formatRupiah(dataStorage?.total_display_price)}
                     </span>
                     <div className="flex items-center text-sky-600 text-xs font-medium border py-0.5 px-2 rounded-full border-sky-600">
-                      <span>
-                        {dataStorage?.percentage_product_display_price}%
-                      </span>
+                      <span>{dataStorage?.percentage_display_price}%</span>
                     </div>
                   </div>
                 </div>
                 <Progress
-                  value={dataStorage?.percentage_product_display_price}
+                  value={dataStorage?.percentage_display_price}
                   className="h-1.5 bg-gray-200"
                 />
               </div>
             </CardContent>
           </Card>
-          <Card className="w-full bg-white rounded-md overflow-hidden shadow border-0">
+          {/* <Card className="w-full bg-white rounded-md overflow-hidden shadow border-0">
             <CardHeader>
               <CardTitle>Product Staging</CardTitle>
             </CardHeader>
@@ -761,9 +823,9 @@ export const Client = () => {
                 />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
-        <div className="w-full flex gap-4">
+        {/* <div className="w-full flex gap-4">
           <Card className="w-full bg-white rounded-md overflow-hidden shadow border-0">
             <CardHeader>
               <CardTitle>Product Dump</CardTitle>
@@ -876,7 +938,7 @@ export const Client = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
         {/* <div className="w-full flex gap-4">
           <Card className="w-full bg-white rounded-md overflow-hidden shadow border-0">
             <CardHeader>
@@ -1011,7 +1073,7 @@ export const Client = () => {
             </CardContent>
           </Card>
         </div> */}
-        <div className="w-full bg-white rounded-md shadow flex flex-col">
+        {/* <div className="w-full bg-white rounded-md shadow flex flex-col">
           <div className="border-b py-2 border-black w-full px-6">
             <h1 className="font-bold">Product Color</h1>
           </div>
@@ -1077,7 +1139,7 @@ export const Client = () => {
               </Card>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 gap-6 items-center flex-col">
         <div className="w-full flex flex-col gap-4">
@@ -1098,7 +1160,7 @@ export const Client = () => {
                   onClick={clearSearch}
                   className={cn(
                     "h-5 w-5 absolute right-2 items-center justify-center outline-none",
-                    dataSearch.length > 0 ? "flex" : "hidden"
+                    dataSearch.length > 0 ? "flex" : "hidden",
                   )}
                 >
                   <X className="w-4 h-4" />
@@ -1108,7 +1170,7 @@ export const Client = () => {
                 <button
                   className={cn(
                     "w-9 h-full flex items-center justify-center outline-none",
-                    layout === "list" ? "bg-sky-300" : "bg-transparent"
+                    layout === "list" ? "bg-sky-300" : "bg-transparent",
                   )}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -1121,7 +1183,7 @@ export const Client = () => {
                 <button
                   className={cn(
                     "w-9 h-full flex items-center justify-center outline-none",
-                    layout === "grid" ? "bg-sky-300" : "bg-transparent"
+                    layout === "grid" ? "bg-sky-300" : "bg-transparent",
                   )}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -1155,30 +1217,30 @@ export const Client = () => {
           <div className="grid grid-cols-4 gap-4 w-full">
             {searchValue ? (
               dataChart.filter((item: any) =>
-                item.category_product
+                item.category_name
                   .toLowerCase()
-                  .includes(searchValue.toLowerCase())
+                  .includes(searchValue.toLowerCase()),
               ).length > 0 ? (
                 dataChart
                   .filter((item: any) =>
-                    item.category_product
+                    item.category_name
                       .toLowerCase()
-                      .includes(searchValue.toLowerCase())
+                      .includes(searchValue.toLowerCase()),
                   )
                   .map((item: any, i: number) => (
                     <div
-                      key={item.category_product + i}
+                      key={item.category_name + i}
                       className="flex relative w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 justify-center flex-col border transition-all hover:border-sky-300 box-border"
                     >
                       <p className="text-sm font-light text-gray-700 pb-1">
-                        {item.category_product}
+                        {item.category_name}
                       </p>
                       <div className="flex flex-col">
                         <h3 className="text-gray-700 border-t border-gray-500 text-sm font-semibold pb-2 pt-1">
                           {formatRupiah(item.total_price_category)}
                         </h3>
                         <h3 className="text-gray-700 font-bold text-2xl">
-                          {item.total_category.toLocaleString()}
+                          {item.total_product.toLocaleString()}
                         </h3>
                       </div>
                       <p className="absolute text-end text-[70px] font-bold -bottom-5 right-2 text-gray-300/30 z-0">
@@ -1196,18 +1258,18 @@ export const Client = () => {
             ) : (
               dataChart.map((item: any, i: number) => (
                 <div
-                  key={item.category_product + i}
+                  key={item.category_name + i}
                   className="flex w-full relative bg-white rounded-md overflow-hidden shadow px-5 py-3 justify-center flex-col border transition-all hover:border-sky-300 box-border"
                 >
                   <p className="text-sm font-light text-gray-700 pb-1">
-                    {item.category_product}
+                    {item.category_name}
                   </p>
                   <div className="flex flex-col">
                     <h3 className="text-gray-700 border-t border-gray-500 text-sm font-semibold pb-2 pt-1">
                       {formatRupiah(item.total_price_category)}
                     </h3>
                     <h3 className="text-gray-700 font-bold text-2xl">
-                      {item.total_category.toLocaleString()}
+                      {item.total_product.toLocaleString()}
                     </h3>
                   </div>
                   <p className="absolute text-end text-[70px] font-bold -bottom-5 right-2 text-gray-300/30 z-0">
@@ -1224,9 +1286,9 @@ export const Client = () => {
                 columns={columnsStorage}
                 data={
                   dataChart.filter((item: any) =>
-                    item.category_product
+                    item.category_name
                       .toLowerCase()
-                      .includes(searchValue.toLowerCase())
+                      .includes(searchValue.toLowerCase()),
                   ) ?? []
                 }
               />

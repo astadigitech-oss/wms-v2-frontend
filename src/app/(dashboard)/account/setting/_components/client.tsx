@@ -205,7 +205,7 @@ export const Client = () => {
                   setOpenDialog("create");
                 }}
                 disabled={loading}
-                className="items-center flex-none h-9 bg-sky-400/80 hover:bg-sky-400 text-black disabled:opacity-100 disabled:hover:bg-sky-400 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                className="bg-[#0B91FF] text-white hover:bg-blue-500 focus:bg-[#0B91FF]"
                 variant={"outline"}
               >
                 {loading ? (

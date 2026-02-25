@@ -4,19 +4,22 @@ import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { getCookie } from "cookies-next/client";
 
-export const useGetDetailAccount = ({ id }: any) => {
+export const useGetPriceProductDisplay = ({ price }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["account-detail", id],
+    queryKey: ["price-product-product-display", price],
     queryFn: async () => {
-      const res = await axios.get(`${baseUrl}/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${baseUrl}/product-price-colors?old_price=${price}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       return res;
     },
-    enabled: !!id,
+    enabled: !!price,
   });
   return query;
 };

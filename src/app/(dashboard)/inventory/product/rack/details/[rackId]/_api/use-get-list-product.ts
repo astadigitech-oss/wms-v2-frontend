@@ -4,19 +4,21 @@ import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { getCookie } from "cookies-next/client";
 
-export const useGetDetailAccount = ({ id }: any) => {
+export const useGetListProduct = ({ id, p, q }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["account-detail", id],
+    queryKey: ["list-product-display-detail", { id, p, q }],
     queryFn: async () => {
-      const res = await axios.get(`${baseUrl}/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${baseUrl}/racks/list-product?source=display&rack_id=${id}&page=${p}&q=${q}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       return res;
     },
-    enabled: !!id,
   });
   return query;
 };
