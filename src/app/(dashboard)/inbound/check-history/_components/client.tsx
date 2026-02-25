@@ -11,7 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useDebounce } from "@/hooks/use-debounce";
-import { ReceiptText, RefreshCw, Trash2 } from "lucide-react";
+import {  RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { alertError, cn, setPaginate } from "@/lib/utils";
 import { parseAsInteger, useQueryState } from "nuqs";
@@ -23,25 +23,15 @@ import { AxiosError } from "axios";
 import Forbidden from "@/components/403";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useDeleteHistory } from "../_api/use-delete-history";
 import Pagination from "@/components/pagination";
-import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/app/(dashboard)/loading";
 import { format } from "date-fns";
 
 export const Client = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [dataSearch, setDataSearch] = useQueryState("q", { defaultValue: "" });
-  const queryClient = useQueryClient();
   const searchValue = useDebounce(dataSearch);
   const [page, setPage] = useQueryState("p", parseAsInteger.withDefault(1));
-  const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Data",
-    "This action cannot be undone",
-    "destructive"
-  );
   const [metaPage, setMetaPage] = useState({
     last: 1, //page terakhir
     from: 1, //data dimulai dari (untuk memulai penomoran tabel)
@@ -50,7 +40,6 @@ export const Client = () => {
     perPage: 1,
   });
 
-  const { mutate } = useDeleteHistory();
   const {
     data,
     isError,
@@ -90,14 +79,6 @@ export const Client = () => {
       method: "GET",
     });
   }, [isError, error]);
-
-  const handleDelete = async (id: any) => {
-    const ok = await confirmDelete();
-
-    if (!ok) return;
-
-    mutate({ id });
-  };
 
   const columnCheckHistory: ColumnDef<any>[] = [
     {
@@ -163,49 +144,49 @@ export const Client = () => {
         </div>
       ),
     },
-    {
-      accessorKey: "action",
-      header: () => <div className="text-center">Action</div>,
-      cell: ({ row }) => (
-        <div className="flex gap-4 justify-center items-center">
-          <TooltipProviderPage value="Detail">
-            <Button
-              asChild
-              className="items-center w-9 px-0 flex-none border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50"
-              variant={"outline"}
-              onClick={() => {
-                queryClient.invalidateQueries({
-                  queryKey: ["detail-check-history", row.original.id],
-                });
-                queryClient.invalidateQueries({
-                  queryKey: [
-                    "product-detail-check-history",
-                    row.original.code_document,
-                  ],
-                });
-              }}
-            >
-              <Link href={`/inbound/check-history/${row.original.id}`}>
-                <ReceiptText className="w-4 h-4" />
-              </Link>
-            </Button>
-          </TooltipProviderPage>
-          <TooltipProviderPage value="Delete">
-            <Button
-              className="items-center px-0  border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50 w-9"
-              variant={"outline"}
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete(row.original.id);
-              }}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </TooltipProviderPage>
-        </div>
-      ),
-    },
+    // {
+    //   accessorKey: "action",
+    //   header: () => <div className="text-center">Action</div>,
+    //   cell: ({ row }) => (
+    //     <div className="flex gap-4 justify-center items-center">
+    //       <TooltipProviderPage value="Detail">
+    //         <Button
+    //           asChild
+    //           className="items-center w-9 px-0 flex-none border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50"
+    //           variant={"outline"}
+    //           onClick={() => {
+    //             queryClient.invalidateQueries({
+    //               queryKey: ["detail-check-history", row.original.id],
+    //             });
+    //             queryClient.invalidateQueries({
+    //               queryKey: [
+    //                 "product-detail-check-history",
+    //                 row.original.code_document,
+    //               ],
+    //             });
+    //           }}
+    //         >
+    //           <Link href={`/inbound/check-history/${row.original.id}`}>
+    //             <ReceiptText className="w-4 h-4" />
+    //           </Link>
+    //         </Button>
+    //       </TooltipProviderPage>
+    //       <TooltipProviderPage value="Delete">
+    //         <Button
+    //           className="items-center px-0  border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50 w-9"
+    //           variant={"outline"}
+    //           type="button"
+    //           onClick={(e) => {
+    //             e.preventDefault();
+    //             handleDelete(row.original.id);
+    //           }}
+    //         >
+    //           <Trash2 className="w-4 h-4" />
+    //         </Button>
+    //       </TooltipProviderPage>
+    //     </div>
+    //   ),
+    // },
   ];
 
   useEffect(() => {
@@ -226,7 +207,6 @@ export const Client = () => {
 
   return (
     <div className="flex flex-col items-start bg-gray-100 w-full px-4 gap-4 py-4">
-      <DeleteDialog />
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
