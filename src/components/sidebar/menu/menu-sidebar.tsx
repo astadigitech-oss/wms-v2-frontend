@@ -3,7 +3,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ButtonSidebar } from "../button-sidebar";
 import {
-  BarChart,
+  BarChartBig,
   Blocks,
   Boxes,
   FileCog,
@@ -39,19 +39,25 @@ const sidebarMenu = [
         sub_menu: [],
       },
       {
-        title: "List Sale",
-        href: "/dashboard/list-sale",
-        icon: <BarChart className="w-5 h-5 stroke-[1.5]" />,
-        query: "list-sale",
-        sub_menu: [],
+        title: "Report Sale",
+        href: undefined,
+        icon: <BarChartBig className="w-5 h-5 stroke-[1.5]" />,
+        query: "report-sale",
+        sub_menu: [
+          {
+            title: "General Sale",
+            href: "/dashboard/report-sale/general-sale",
+          },
+          {
+            title: "Analytic Sale Monthly",
+            href: "/dashboard/report-sale/analytic-sale-monthly",
+          },
+          {
+            title: "Analytic Sale Annual",
+            href: "/dashboard/report-sale/analytic-sale-annual",
+          },
+        ],
       },
-      // {
-      //   title: "General Sale",
-      //   href: "/dashboard/general-sale",
-      //   icon: <BarChartBig className="w-5 h-5 stroke-[1.5]" />,
-      //   query: "general-sale",
-      //   sub_menu: [],
-      // },
       // {
       //   title: "Analytic Sale",
       //   href: "/dashboard/analytic-sale",
