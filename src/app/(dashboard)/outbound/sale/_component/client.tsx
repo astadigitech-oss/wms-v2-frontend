@@ -234,7 +234,8 @@ export const Client = () => {
                                     <PlusCircle className={"w-4 h-4"} />
                                     Cashier
                                 </Link>
-                            </Button></div>
+                            </Button>
+                        </div>
                     </div>
                     <DataTable
                         columns={columnListSale}
