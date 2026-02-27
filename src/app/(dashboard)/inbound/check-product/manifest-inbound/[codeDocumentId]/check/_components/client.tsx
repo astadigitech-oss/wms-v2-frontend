@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
- 
+
 "use client";
 
 import {
@@ -11,17 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Grid2x2X,
-  Loader,
-  Search,
-  Send,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Grid2x2X, Loader, Search, Send, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { cn, formatRupiah } from "@/lib/utils";
 import { useQueryState } from "nuqs";
@@ -31,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { useConfirm } from "@/hooks/use-confirm";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +29,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +40,6 @@ import Loading from "@/app/(dashboard)/loading";
 import { useSubmitProduct } from "../_api/use-submit-product";
 import { format } from "date-fns";
 import BarcodePrinted from "@/components/barcode";
-import { useSubmitDoneCheckAll } from "../_api/use-submit-done-check-all";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Client = () => {
@@ -83,18 +70,12 @@ export const Client = () => {
   //   "Confirm to submit the same barcode again, This action cannot be undone",
   //   "liquid",
   // );
-  const [DoneAllDialog, confirmDoneAll] = useConfirm(
-    "Done check all documents",
-    "",
-    "liquid",
-  );
 
   const [dataSearch, setDataSearch] = useQueryState("q", { defaultValue: "" });
   const searchValue = useDebounce(dataSearch);
   const [idProduct, setIdProduct] = useState("");
   const codeDocument = `${codeDocumentId}`;
   const { mutate, isPending: isPendingSubmit } = useSubmitProduct();
-  const { mutate: mutateDoneAll } = useSubmitDoneCheckAll();
 
   const { data, error, isError } = useGetCheckManifestInbound({
     code: codeDocument,
@@ -150,14 +131,8 @@ export const Client = () => {
   const categories: any[] = useMemo(() => {
     return dataCategories?.data.resource;
   }, [dataCategories]);
+  console.log("categories", categories);
 
-  const handleDoneCheckAll = async () => {
-    const ok = await confirmDoneAll();
-
-    if (!ok) return;
-
-    mutateDoneAll({ code_document: codeDocument });
-  };
   // const handleSubmitDouble = async (body: any) => {
   //   const ok = await confirmSubmit();
 
@@ -332,7 +307,6 @@ export const Client = () => {
 
   return (
     <div className="flex flex-col items-start bg-gray-100 w-full relative px-4 gap-4 py-4">
-      <DoneAllDialog />
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -417,35 +391,6 @@ export const Client = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex w-full bg-white rounded-md overflow-hidden shadow p-5 gap-6 items-center">
-        <div className="w-full flex gap-2 items-center">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              handleDoneCheckAll();
-            }}
-            className="bg-sky-400/80 hover:bg-sky-400 text-black"
-            type="button"
-            disabled={loadingBarcode || isPendingSubmit}
-          >
-            <ShieldCheck className="w-4 h-4 mr-2" />
-            Done Check All
-          </Button>
-        </div>
-        {isSuccessBarcode && (
-          <div className="flex justify-end gap-2 items-center flex-none">
-            <p>Keterangan:</p>
-            <Badge className="bg-sky-100 hover:bg-sky-100 border border-sky-500 text-black py-1 gap-1 rounded-full shadow-none">
-              {parseFloat(barcodeData?.old_price_product) > 100000 ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronLeft className="w-4 h-4" />
-              )}
-              <p>100K</p>
-            </Badge>
-          </div>
-        )}
       </div>
       {loadingBarcode || isPendingSubmit ? (
         <div className="flex flex-col w-full bg-white rounded-md shadow items-center justify-center h-75 gap-3">

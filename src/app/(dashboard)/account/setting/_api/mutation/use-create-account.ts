@@ -15,7 +15,7 @@ export const useCreateAccount = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutate<Body>({
-    endpoint: "/register",
+    endpoint: "/users",
     method: "post",
     onSuccess: (res) => {
       toast.success("User successfully created");

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
@@ -9,7 +10,7 @@ export const useGetPriceProductStaging = ({ price }: any) => {
     queryKey: ["price-product-product-staging", price],
     queryFn: async () => {
       const res = await axios.get(
-        `${baseUrl}/product-price-colors?old_price_product=${price}`,
+        `${baseUrl}/product-price-colors?old_price=${price}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

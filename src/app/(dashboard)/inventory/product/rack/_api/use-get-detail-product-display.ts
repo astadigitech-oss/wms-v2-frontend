@@ -4,12 +4,12 @@ import axios from "axios";
 import { baseUrl } from "@/lib/baseUrl";
 import { getCookie } from "cookies-next/client";
 
-export const useGetDetailAccount = ({ id }: any) => {
+export const useGetDetailProductDisplay = ({ id }: any) => {
   const accessToken = getCookie("accessToken");
   const query = useQuery({
-    queryKey: ["account-detail", id],
+    queryKey: ["product-display-detail", id],
     queryFn: async () => {
-      const res = await axios.get(`${baseUrl}/users/${id}`, {
+      const res = await axios.get(`${baseUrl}/products/${id}/detail`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -20,3 +20,5 @@ export const useGetDetailAccount = ({ id }: any) => {
   });
   return query;
 };
+
+export default useGetDetailProductDisplay;

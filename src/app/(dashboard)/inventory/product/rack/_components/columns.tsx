@@ -10,16 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
-import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import {
-  Boxes,
   Loader2,
   LucideIcon,
   MoreHorizontal,
-  Pencil,
-  PlusCircle,
   Printer,
   ReceiptText,
   Shield,
@@ -70,11 +66,9 @@ const ButtonAction = ({
     </TooltipProviderPage>
   );
 };
-
-export const columnProductStaging = ({
+export const columnProductDisplay = ({
   metaPageProduct,
   isLoading,
-  handleAddFilter,
   setProductId,
   setIsOpen,
   setIsOpenDamaged,
@@ -86,7 +80,7 @@ export const columnProductStaging = ({
     id: "id",
     cell: ({ row }) => (
       <div className="text-center tabular-nums">
-        {(metaPageProduct.from + row.index).toLocaleString()}
+        {(metaPageProduct.from + row.index + 1).toLocaleString()}
       </div>
     ),
   },
@@ -103,9 +97,9 @@ export const columnProductStaging = ({
     ),
   },
   {
-    accessorKey: "category_name",
+    accessorKey: "name_category",
     header: "Category",
-    cell: ({ row }) => row.original.category_name ?? "-",
+    cell: ({ row }) => row.original.name_category ?? "-",
   },
   {
     accessorKey: "display_price",
@@ -126,10 +120,10 @@ export const columnProductStaging = ({
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "new_status_product",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status;
+      const status = row.original.new_status_product;
       return (
         <Badge
           className={cn(
@@ -169,22 +163,6 @@ export const columnProductStaging = ({
               <DropdownMenuItem
                 onClick={(e) => {
                   e.preventDefault();
-                  handleAddFilter(row.original.id);
-                }}
-                className="flex items-center gap-2 text-sky-700 focus:text-sky-700"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <PlusCircle className="size-4" />
-                )}
-                Add to Filter
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
                   setIsOpen("detail");
                   setProductId(row.original.id);
                 }}
@@ -200,8 +178,6 @@ export const columnProductStaging = ({
                   e.preventDefault();
                   setDamagedProductId(row.original.id);
                   setDamagedBarcode(row.original.barcode ?? "-");
-                  setIsOpen("damaged");
-
                   setIsOpenDamaged(true);
                 }}
                 className="flex items-center gap-2 text-red-700 focus:text-red-700"
@@ -218,7 +194,7 @@ export const columnProductStaging = ({
   },
 ];
 
-export const columnFilteredProductStaging = ({
+export const columnFilteredProductDisplay = ({
   metaPage,
   isLoading,
   handleRemoveFilter,
@@ -264,14 +240,8 @@ export const columnFilteredProductStaging = ({
   },
 ];
 
-export const columnRackStaging = ({
+export const columnRackDisplay = ({
   metaPage,
-  isLoading,
-  setRackId,
-  setInput,
-  handleDelete,
-  handleSubmit,
-  setIsOpen,
   setSelectedBarcode,
   setSelectedNameRack,
   setSelectedTotalProduct,
@@ -337,48 +307,13 @@ export const columnRackStaging = ({
               {/* Detail */}
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/stagging/rack/details/${row.original.id}`}
+                  href={`/inventory/product/rack/details/${row.original.id}`}
                   className="flex items-center gap-2 text-sky-700 focus:text-sky-700"
                 >
                   <ReceiptText className="size-4" />
                   Detail
                 </Link>
               </DropdownMenuItem>
-
-              {/* Edit Rack */}
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
-                  setRackId(row.original.id);
-                  setInput((prev: any) => ({
-                    ...prev,
-                    displayId:
-                      row.original.display_rack_id ??
-                      row.original.display?.id ??
-                      "",
-                    display: {
-                      id:
-                        row.original.display_rack_id ??
-                        row.original.display?.id ??
-                        "",
-                      name:
-                        row.original.display?.name ?? row.original.name ?? "",
-                    },
-                    name: row.original.name ?? prev.name,
-                  }));
-                  setIsOpen("create-edit");
-                }}
-                className="flex items-center gap-2 text-yellow-700 focus:text-yellow-700"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Pencil className="size-4" />
-                )}
-                Edit Rack
-              </DropdownMenuItem>
-
               {/* Print QR */}
               <DropdownMenuItem
                 onClick={(e) => {
@@ -392,34 +327,6 @@ export const columnRackStaging = ({
               >
                 <Printer className="size-4" />
                 Print QR
-              </DropdownMenuItem>
-
-              {/* To Display */}
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSubmit(row.original.id);
-                }}
-                className="flex items-center gap-2 text-indigo-700 focus:text-indigo-700"
-                disabled={isLoading}
-              >
-                <Boxes className="size-4" />
-                To Display
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              {/* Delete */}
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleDelete(row.original.id);
-                }}
-                className="flex items-center gap-2 text-red-700 focus:text-red-700"
-                disabled={isLoading}
-              >
-                <Trash2 className="size-4" />
-                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

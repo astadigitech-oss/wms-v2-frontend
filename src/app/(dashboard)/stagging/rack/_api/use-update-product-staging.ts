@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
@@ -7,7 +8,7 @@ import { getCookie } from "cookies-next/client";
 import { invalidateQuery } from "@/lib/query";
 
 type RequestType = {
-  id: string;
+  barcode: string;
   body: any;
 };
 
@@ -18,8 +19,8 @@ export const useUpdateProductStaging = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<AxiosResponse, Error, RequestType>({
-    mutationFn: async ({ id, body }) => {
-      const res = await axios.put(`${baseUrl}/staging_products/${id}`, body, {
+    mutationFn: async ({ barcode, body }) => {
+      const res = await axios.put(`${baseUrl}/products/${barcode}/update`, body, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
