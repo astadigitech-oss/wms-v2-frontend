@@ -3,9 +3,11 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ButtonSidebar } from "../button-sidebar";
 import {
+  // BadgeDollarSign,
   BarChartBig,
   Blocks,
   Boxes,
+  Drill,
   FileCog,
   FolderClock,
   LibraryBigIcon,
@@ -15,6 +17,7 @@ import {
   ScanText,
   SendToBack,
   ShoppingBasket,
+  ShoppingCart,
   SquareLibrary,
   Target,
   User,
@@ -259,37 +262,43 @@ const sidebarMenu = [
       // },
     ],
   },
-  // {
-  //   id: 5,
-  //   title: "Repair Station",
-  //   href: undefined,
-  //   menu: [
-  //     // {
-  //     //   title: "List Product Repair",
-  //     //   href: "/repair-station/list-product-repair",
-  //     //   icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
-  //     //   sub_menu: [],
-  //     // },
-  //     {
-  //       title: "migrate To Repair",
-  //       href: "/repair-station/migrate-to-repair",
-  //       icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "Abnormal",
-  //       href: "/repair-station/abnormal",
-  //       icon: <TriangleAlert className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //     {
-  //       title: "Damaged",
-  //       href: "/repair-station/damaged",
-  //       icon: <Shield className="w-5 h-5 stroke-[1.5]" />,
-  //       sub_menu: [],
-  //     },
-  //   ],
-  // },
+  {
+    id: 5,
+    title: "Repair Station",
+    href: undefined,
+    menu: [
+      {
+        title: "List Product Repair",
+        href: "/repair-station/list-product-repair",
+        icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
+      {
+        title: "QCD",
+        href: "/repair-station/qcd",
+        icon: <ShoppingCart className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
+      // {
+      //   title: "migrate To Repair",
+      //   href: "/repair-station/migrate-to-repair",
+      //   icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "Abnormal",
+      //   href: "/repair-station/abnormal",
+      //   icon: <TriangleAlert className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+      // {
+      //   title: "Damaged",
+      //   href: "/repair-station/damaged",
+      //   icon: <Shield className="w-5 h-5 stroke-[1.5]" />,
+      //   sub_menu: [],
+      // },
+    ],
+  },
   {
     id: 6,
     title: "outbond",
@@ -324,7 +333,7 @@ const sidebarMenu = [
       },
       // {
       //   title: "buyer",
-      //   href: "/outbond/buyer",
+      //   href: "/outbound/buyer",
       //   icon: <BadgeDollarSign className="w-5 h-5 stroke-[1.5]" />,
       //   sub_menu: [],
       // },
