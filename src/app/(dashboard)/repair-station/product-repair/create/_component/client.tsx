@@ -121,7 +121,7 @@ export const Client = () => {
                     <BreadcrumbItem>Repair Station</BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/outbound/sale">List Product Repair</BreadcrumbLink>
+                        <BreadcrumbLink href="/repair-station/product-repair">List Product Repair</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Add List Product Repair</BreadcrumbItem>

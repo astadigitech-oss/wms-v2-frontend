@@ -5,7 +5,6 @@
 import { useGetListBundle } from "@/app/(dashboard)/inventory/moving-product/bundle/_api/use-get-list-bundle";
 import { DataTable } from "@/components/data-table";
 import Pagination from "@/components/pagination";
-import { Badge } from "@/components/ui/badge";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,15 +14,14 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
-import { cn, setPaginate } from "@/lib/utils";
+import { setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
-import Link from "next/link";
-import { PlusCircle, Recycle, RefreshCw, Tv2 } from "lucide-react";
+import { PlusCircle, RefreshCw, Send, ShoppingCart, Trash2 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
-import { formatRupiah } from "@/lib/utils";
 
 
 
@@ -56,15 +54,16 @@ export const Client = () => {
 
     const dummyData = [
         {
-            barcode: "LQMGT0011",
-            qcd_name: "Motherboard Asus",
+            barcode: "LQMGT0012",
+            product_name: "Kaos Polos Putih",
             qty: 5,
             price: 500000,
-            status: "pending",
+            discount: 0,
+            total: 500000,
         },
     ];
 
-    const columnListProductRepair: ColumnDef<any>[] = [
+    const columnListSale: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -84,75 +83,33 @@ export const Client = () => {
             ),
         },
         {
-            accessorKey: "qcd_name",
-            header: "QCD Name",
+            accessorKey: "product_name",
+            header: "Product Name",
             size: 200,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.qcd_name || '-'}</div>
-            ),
-        },
-        {
-            accessorKey: "qty",
-            header: () => <div className="text-center">QTY</div>,
-            size: 80,
-            cell: ({ row }) => (
-                <div className="break-all text-center">{row.original?.qty || 0}</div>
-            ),
-        },
-        {
-            accessorKey: "total_price",
-            header: "Total Price",
-            size: 130,
-            cell: ({ row }) => (
-                <div className="break-all">{formatRupiah(row.original?.price || 0)}</div>
-            ),
-        },
-        {
-            accessorKey: "status",
-            header: () => <div className="text-center">Status</div>,
-            size: 80,
-            maxSize: 80,
-            cell: ({ row }) => (
-                <div className="flex gap-4 justify-center">
-                    <Badge
-                        className={cn(
-                            "rounded justify-center text-white font-normal capitalize",
-                            row.original?.status === "done"
-                                ? "bg-green-400 hover:bg-green-400"
-                                : "bg-yellow-400 hover:bg-yellow-400"
-                        )}
-                    >
-                        {row.original?.status === "done" ? "Done" : "Pending"}
-                    </Badge>
-                </div>
+                <div className="break-all">{row.original?.product_name || '-'}</div>
             ),
         },
         {
             accessorKey: "action",
             header: () => <div className="text-center">Action</div>,
-            size: 100,
+            size: 80,
             cell: () => (
-                <div className="flex gap-4 justify-center items-center">
-                    <TooltipProviderPage value={<p>Detail</p>}>
-                        <Button
-                            className="items-center w-9 px-0 flex-none h-9 border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50"
-                            variant={"outline"}
-                        >
-                            <Tv2 className="w-4 h-4" />
-                        </Button>
-                    </TooltipProviderPage>
+                <div className="flex gap-2 justify-center items-center">
                     <TooltipProviderPage value={<p>Delete</p>}>
                         <Button
-                            className="items-center w-9 px-0 flex-none h-9 border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50"
+                            className="items-center w-8 px-0 flex-none h-8 border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50"
                             variant={"outline"}
+                            size="sm"
                         >
-                            <Recycle className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                         </Button>
                     </TooltipProviderPage>
                 </div>
             ),
         },
     ];
+
     return (
         <div className="flex flex-col bg-gray-100 w-full px-4 py-4 gap-4">
             <Breadcrumb>
@@ -163,13 +120,64 @@ export const Client = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Repair Station</BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>List QCD</BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/outbound/qcd">QCD</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>Add List QCD</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-10 flex-col">
-                <h2 className="text-xl font-bold">List QCD</h2>
-                <div className="flex flex-col w-full gap-4">
-                    <div className="flex gap-2 items-center w-full justify-between">
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
+                <div className="flex flex-col w-full gap-4 p-2">
+                    <div className="flex items-center justify-start gap-3">
+                        <div className="flex items-center gap-2 bg-sky-500 text-sky-100 px-3 py-2.5 rounded-full border border-sky-300">
+                            <ShoppingCart className="w-5 h-6" />
+                        </div>
+                        <span className="font-semibold text-xl">LOMGT0011</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
+                <div className="flex flex-col w-full gap-4 p-4">
+                    {/* Row 2: 3 columns */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <Label className="text-sm font-bold">QCD Name</Label>
+                            <Input
+                                className="border-sky-400/80 focus-visible:ring-sky-400"
+                                placeholder="Buyer"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Label className="text-sm font-bold">Total Price</Label>
+                            <Input
+                                className="border-sky-400/80 focus-visible:ring-sky-400"
+                                placeholder="Buyer Class"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Label className="text-sm font-bold">Custome Price</Label>
+                            <Input
+                                className="border-sky-400/80 focus-visible:ring-sky-400"
+                                placeholder="New Buyer Class"
+                            />
+                        </div>
+                    </div>
+
+                     {/* Grand Total Section */}
+                        <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
+                            <Send className="w-4 h-4" />
+                            Create
+                        </Button>
+                </div>
+            </div>
+
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
+                {/* Add Product Section */}
+                <div className="flex flex-col w-full gap-3">
+                    <h3 className="text-base font-semibold">List Product Filtered</h3>
+                    <div className="flex gap-2 items-end w-full">
                         <div className="flex items-center gap-3 w-full">
                             <Input
                                 className="w-2/5 border-sky-400/80 focus-visible:ring-sky-400"
@@ -190,30 +198,26 @@ export const Client = () => {
                                 </Button>
                             </TooltipProviderPage>
                         </div>
-                        <div className="flex items-center gap-3 w-full justify-end">
-                            <Button
-                                asChild
-                                className="items-center flex-none h-9 w-60 blue border-sky-400/80 text-white hover:text-white disabled:opacity-100 disabled:border-sky-400/80 disabled:pointer-events-auto disabled:cursor-not-allowed"
-                                variant={"outline"}
-                            >
-                                <Link href="/repair-station/qcd/add-list-qcd">
-                                    <PlusCircle className={"w-4 h-4"} />
-                                    Add List QCD
-                                </Link>
-                            </Button>
-                        </div>
+                        <Button
+                            className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white"
+                        >
+                            <PlusCircle className="w-4 h-4 mr-2" />
+                            Add Product
+                        </Button>
                     </div>
+                </div>
+                {/* Table Section */}
+                <div className="flex flex-col w-full gap-4">
                     <DataTable
-                        columns={columnListProductRepair}
+                        columns={columnListSale}
                         data={[...dummyData]}
-                    // isLoading={loadingAPK}
                     />
                     <Pagination
                         pagination={{ ...metaPage, current: page }}
                         setPagination={setPage}
                     />
                 </div>
-            </div>{" "}
+            </div>
         </div>
     );
 };

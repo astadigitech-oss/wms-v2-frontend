@@ -16,10 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
-import { setPaginate } from "@/lib/utils";
+import { formatRupiah, setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
-import { PlusCircle, RefreshCw, Send, ShoppingCart, Trash2 } from "lucide-react";
+import { RefreshCw, Send, Trash2, Truck } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
@@ -55,11 +55,9 @@ export const Client = () => {
     const dummyData = [
         {
             barcode: "LQMGT0012",
-            product_name: "Kaos Polos Putih",
-            qty: 5,
+            color: "Sample Color",
+            total: 5,
             price: 500000,
-            discount: 0,
-            total: 500000,
         },
     ];
 
@@ -83,11 +81,27 @@ export const Client = () => {
             ),
         },
         {
-            accessorKey: "product_name",
-            header: "Product Name",
+            accessorKey: "color",
+            header: "Color",
             size: 200,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.product_name || '-'}</div>
+                <div className="break-all">{row.original?.color || '-'}</div>
+            ),
+        },
+        {
+            accessorKey: "total",
+            header: () => <div className="text-center">Total</div>,
+            size: 80,
+            cell: ({ row }) => (
+                <div className="break-all text-center">{row.original?.total || 0}</div>
+            ),
+        },
+        {
+            accessorKey: "price",
+            header: "Price",
+            size: 130,
+            cell: ({ row }) => (
+                <div className="break-all">{formatRupiah(row.original?.price || 0)}</div>
             ),
         },
         {
@@ -121,55 +135,57 @@ export const Client = () => {
                     <BreadcrumbItem>Repair Station</BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/repair-station/qcd">QCD</BreadcrumbLink>
+                        <BreadcrumbLink href="/repair-station/migrate-color/list">Migrate Color</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>Add List QCD</BreadcrumbItem>
+                    <BreadcrumbItem>Add List Product Repair</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
                 <div className="flex flex-col w-full gap-4 p-2">
                     <div className="flex items-center justify-start gap-3">
                         <div className="flex items-center gap-2 bg-sky-500 text-sky-100 px-3 py-2.5 rounded-full border border-sky-300">
-                            <ShoppingCart className="w-5 h-6" />
+                            <Truck className="w-5 h-6" />
                         </div>
-                        <span className="font-semibold text-xl">LOMGT0011</span>
+                        <span className="font-semibold text-xl">Create Migrate Color</span>
                     </div>
                 </div>
             </div>
 
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
                 <div className="flex flex-col w-full gap-4 p-4">
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <Label className="text-sm font-bold">Destination</Label>
+                            <Input
+                                className="border-sky-400/80 focus-visible:ring-sky-400"
+                                placeholder="Destination"
+                            />
+                        </div>
+                    </div>
                     {/* Row 2: 3 columns */}
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">QCD Name</Label>
+                            <Label className="text-sm font-bold">Color Product</Label>
                             <Input
                                 className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Buyer"
+                                placeholder="Color Product"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Total Price</Label>
+                            <Label className="text-sm font-bold">Qty</Label>
                             <Input
                                 className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Buyer Class"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Custome Price</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="New Buyer Class"
+                                placeholder="Qty"
                             />
                         </div>
                     </div>
 
-                     {/* Grand Total Section */}
-                        <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
-                            <Send className="w-4 h-4" />
-                            Create
-                        </Button>
+                    {/* Grand Total Section */}
+                    <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
+                        <Send className="w-4 h-4" />
+                        Create
+                    </Button>
                 </div>
             </div>
 
@@ -201,8 +217,8 @@ export const Client = () => {
                         <Button
                             className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white"
                         >
-                            <PlusCircle className="w-4 h-4 mr-2" />
-                            Add Product
+                            <Send className="w-4 h-4 mr-2" />
+                            Send
                         </Button>
                     </div>
                 </div>
