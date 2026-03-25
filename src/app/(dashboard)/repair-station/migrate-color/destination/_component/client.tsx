@@ -5,7 +5,7 @@
 import { useGetListBundle } from "@/app/(dashboard)/inventory/moving-product/bundle/_api/use-get-list-bundle";
 import { DataTable } from "@/components/data-table";
 import Pagination from "@/components/pagination";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -20,10 +20,11 @@ import { cn, setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
 // import { format } from "date-fns";
-import Link from "next/link";
-import { PlusCircle, Recycle, RefreshCw, Tv2 } from "lucide-react";
+// import Link from "next/link";
+import { Pencil, PlusCircle, RefreshCw, Trash2, } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
+import DialogCreateDestination from "../dialog/dialog-create-destination";
 
 
 
@@ -38,6 +39,8 @@ export const Client = () => {
         to: 1, //data sampai
         perPage: 1,
     });
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     const {
         data,
@@ -54,16 +57,30 @@ export const Client = () => {
         });
     }, [data]);
 
+    const handleOpenCreate = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleCreate = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Create:");
+        handleCloseDialog();
+    };
+
     const dummyData = [
         {
-            barcode: "LQMGT0011",
-            product_name: "Motherboard Asus",
-            date: "28-11-2025",
-            status: "pending",
+            warehouse_name: "LQMGT0011",
+            no_hp: "08122293021",
+            qty: 2,
+            address: "Cileungsi, Kec. Cileungsi, Kabupaten Bogor, Jawa Barat",
         },
     ];
 
-    const columnListProductRepair: ColumnDef<any>[] = [
+    const columnListMigrateColor: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -75,47 +92,27 @@ export const Client = () => {
             ),
         },
         {
-            accessorKey: "barcode",
-            header: "Barcode",
+            accessorKey: "warehouse-name",
+            header: "Warehouse Name",
             size: 150,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.barcode || '-'}</div>
+                <div className="break-all">{row.original?.warehouse_name || '-'}</div>
             ),
         },
         {
-            accessorKey: "product_name",
-            header: "Product Name",
-            size: 200,
-            cell: ({ row }) => (
-                <div className="break-all">{row.original?.product_name || '-'}</div>
-            ),
-        },
-        {
-            accessorKey: "periode_end",
-            header: "Periode End",
+            accessorKey: "no_hp",
+            header: "No. Hp",
             size: 100,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.date || '-'}</div>
+                <div className="break-all">{row.original?.no_hp || '-'}</div>
             ),
         },
         {
-            accessorKey: "status",
-            header: () => <div className="text-center">Status</div>,
-            size: 80,
-            maxSize: 80,
+            accessorKey: "address",
+            header: "Address",
+            size: 150,
             cell: ({ row }) => (
-                <div className="flex gap-4 justify-center">
-                    <Badge
-                        className={cn(
-                            "rounded justify-center text-white font-normal capitalize",
-                            row.original?.status === "done"
-                                ? "bg-green-400 hover:bg-green-400"
-                                : "bg-yellow-400 hover:bg-yellow-400"
-                        )}
-                    >
-                        {row.original?.status === "done" ? "Done" : "Pending"}
-                    </Badge>
-                </div>
+                <div className="break-all">{row.original?.address || '-'}</div>
             ),
         },
         {
@@ -124,20 +121,53 @@ export const Client = () => {
             size: 100,
             cell: () => (
                 <div className="flex gap-4 justify-center items-center">
-                    <TooltipProviderPage value={<p>Detail</p>}>
+                    <TooltipProviderPage
+                        side="bottom"
+                        align="start"
+                        sideOffset={6}
+                        value={
+                            <div className="flex items-center gap-2">
+                                <Pencil className="w-4 h-4" />
+                                <span>Edit</span>
+                            </div>
+                        }
+                    >
                         <Button
-                            className="items-center w-9 px-0 flex-none h-9 border-sky-400 text-sky-700 hover:text-sky-700 hover:bg-sky-50"
-                            variant={"outline"}
+                            variant="outline"
+                            className={cn(
+                                "w-9 h-9 px-0 flex items-center justify-center",
+                                "border-[#B0BAC9] text-[#B0BAC9]",
+                                "hover:bg-blue-600 hover:text-white hover:border-blue-600",
+                                "rounded-full transition-all duration-200",
+                                "disabled:hover:bg-transparent",
+                            )}
                         >
-                            <Tv2 className="w-4 h-4" />
+                            <Pencil className="w-4 h-4" />
                         </Button>
                     </TooltipProviderPage>
-                    <TooltipProviderPage value={<p>Delete</p>}>
+
+                    <TooltipProviderPage
+                        side="bottom"
+                        align="start"
+                        sideOffset={6}
+                        value={
+                            <div className="flex items-center gap-2">
+                                <Trash2 className="w-4 h-4" />
+                                <span>Delete</span>
+                            </div>
+                        }
+                    >
                         <Button
-                            className="items-center w-9 px-0 flex-none h-9 border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50"
+                            className={cn(
+                                "w-9 h-9 px-0 flex items-center justify-center",
+                                "border-[#B0BAC9] text-[#B0BAC9]",
+                                "hover:bg-[#FF4F52] hover:text-white hover:border-[#FF4F52]",
+                                "rounded-full transition-all duration-200",
+                                "disabled:hover:bg-transparent",
+                            )}
                             variant={"outline"}
                         >
-                            <Recycle className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                         </Button>
                     </TooltipProviderPage>
                 </div>
@@ -154,11 +184,11 @@ export const Client = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Repair Station</BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>List Product Repair</BreadcrumbItem>
+                    <BreadcrumbItem>List Destination</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-10 flex-col">
-                <h2 className="text-xl font-bold">List Product Repair</h2>
+                <h2 className="text-xl font-bold">List Destination</h2>
                 <div className="flex flex-col w-full gap-4">
                     <div className="flex gap-2 items-center w-full justify-between">
                         <div className="flex items-center gap-3 w-full">
@@ -183,19 +213,19 @@ export const Client = () => {
                         </div>
                         <div className="flex items-center gap-3 w-full justify-end">
                             <Button
-                                asChild
-                                className="items-center flex-none h-9 w-60 blue border-sky-400/80 text-white hover:text-white disabled:opacity-100 disabled:border-sky-400/80 disabled:pointer-events-auto disabled:cursor-not-allowed"
-                                variant={"outline"}
-                            >
-                                <Link href="/repair-station/list-product-repair/add-list-product-repair">
+                                    onClick={handleOpenCreate}
+                                    className="items-center flex-none h-9 w-60 blue border-sky-400/80 text-white hover:text-white"
+                                    variant={"outline"}
+                                >
+                                {/* <Link href="/repair-station/migrate-color/destination/dialog"> */}
                                     <PlusCircle className={"w-4 h-4"} />
-                                    Add List Product Repair
-                                </Link> 
+                                    Add Destination
+                                {/* </Link> */}
                             </Button>
                         </div>
                     </div>
                     <DataTable
-                        columns={columnListProductRepair}
+                        columns={columnListMigrateColor}
                         data={[...dummyData]}
                     // isLoading={loadingAPK}
                     />
@@ -205,6 +235,13 @@ export const Client = () => {
                     />
                 </div>
             </div>{" "}
+            <DialogCreateDestination
+                open={openDialog}
+                onClose={handleCloseDialog}
+                onOpenChange={handleCloseDialog}
+                handleCreate={handleCreate}
+                isPendingCreate={false} // ganti dengan state mutation
+            />
         </div>
     );
 };

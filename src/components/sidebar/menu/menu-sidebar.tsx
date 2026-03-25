@@ -20,6 +20,7 @@ import {
   ShoppingCart,
   SquareLibrary,
   Target,
+  Truck,
   User,
 } from "lucide-react";
 
@@ -268,16 +269,25 @@ const sidebarMenu = [
     href: undefined,
     menu: [
       {
-        title: "List Product Repair",
-        href: "/repair-station/list-product-repair",
+        title: "Product Repair",
+        href: "/repair-station/product-repair",
         icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
         sub_menu: [],
       },
       {
-        title: "QCD",
-        href: "/repair-station/qcd",
-        icon: <ShoppingCart className="w-5 h-5 stroke-[1.5]" />,
-        sub_menu: [],
+        title: "migrate color",
+        href: undefined,
+        icon: <Truck className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [
+          {
+            title: "List Migrate",
+            href: "/repair-station/migrate-color/list",
+          },
+          {
+            title: "destination",
+            href: "/repair-station/migrate-color/destination",
+          },
+        ],
       },
       // {
       //   title: "migrate To Repair",
@@ -304,21 +314,6 @@ const sidebarMenu = [
     title: "outbond",
     href: undefined,
     menu: [
-      // {
-      //   title: "migrate color",
-      //   href: undefined,
-      //   icon: <Truck className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [
-      //     {
-      //       title: "List Migrate",
-      //       href: "/outbond/migrate-color/list",
-      //     },
-      //     {
-      //       title: "destination",
-      //       href: "/outbond/migrate-color/destination",
-      //     },
-      //   ],
-      // },
       {
         title: "sale",
         href: "/outbound/sale",
@@ -329,6 +324,12 @@ const sidebarMenu = [
         title: "B2B",
         href: "/outbound/b2b",
         icon: <ScanText className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
+      {
+        title: "QCD",
+        href: "/outbound/qcd",
+        icon: <ShoppingCart className="w-5 h-5 stroke-[1.5]" />,
         sub_menu: [],
       },
       // {
