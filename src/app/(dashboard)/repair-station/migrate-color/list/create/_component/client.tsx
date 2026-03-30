@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
-import { formatRupiah, setPaginate } from "@/lib/utils";
+import { cn, formatRupiah, setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
 import { RefreshCw, Send, Trash2, Truck } from "lucide-react";
@@ -110,11 +110,26 @@ export const Client = () => {
             size: 80,
             cell: () => (
                 <div className="flex gap-2 justify-center items-center">
-                    <TooltipProviderPage value={<p>Delete</p>}>
+                    <TooltipProviderPage
+                        side="bottom"
+                        align="start"
+                        sideOffset={6}
+                        value={
+                            <div className="flex items-center gap-2">
+                                <Trash2 className="w-4 h-4" />
+                                <span>Delete</span>
+                            </div>
+                        }
+                    >
                         <Button
-                            className="items-center w-8 px-0 flex-none h-8 border-red-400 text-red-700 hover:text-red-700 hover:bg-red-50"
-                            variant={"outline"}
-                            size="sm"
+                            variant="outline"
+                            className={cn(
+                                "w-9 h-9 px-0 flex items-center justify-center",
+                                "border-[#B0BAC9] text-[#B0BAC9]",
+                                "hover:bg-red-600 hover:text-white hover:border-red-600",
+                                "rounded-full transition-all duration-200",
+                                "disabled:hover:bg-transparent",
+                            )}
                         >
                             <Trash2 className="w-4 h-4" />
                         </Button>
