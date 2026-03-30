@@ -16,10 +16,12 @@ import {
   RailSymbol,
   ScanText,
   SendToBack,
+  ShieldAlert,
   ShoppingBasket,
   ShoppingCart,
   SquareLibrary,
   Target,
+  TriangleAlert,
   Truck,
   User,
 } from "lucide-react";
@@ -295,18 +297,18 @@ const sidebarMenu = [
       //   icon: <Drill className="w-5 h-5 stroke-[1.5]" />,
       //   sub_menu: [],
       // },
-      // {
-      //   title: "Abnormal",
-      //   href: "/repair-station/abnormal",
-      //   icon: <TriangleAlert className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [],
-      // },
-      // {
-      //   title: "Damaged",
-      //   href: "/repair-station/damaged",
-      //   icon: <Shield className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [],
-      // },
+      {
+        title: "Abnormal",
+        href: "/repair-station/product-abnormal",
+        icon: <TriangleAlert className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
+      {
+        title: "Damaged",
+        href: "/repair-station/product-damaged",
+        icon: <ShieldAlert className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
     ],
   },
   {
@@ -342,12 +344,6 @@ const sidebarMenu = [
       //   title: "Class buyer",
       //   href: "/outbond/class-buyer",
       //   icon: <Award className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [],
-      // },
-      // {
-      //   title: "QCD",
-      //   href: "/outbond/qcd",
-      //   icon: <Recycle className="w-5 h-5 stroke-[1.5]" />,
       //   sub_menu: [],
       // },
       // {

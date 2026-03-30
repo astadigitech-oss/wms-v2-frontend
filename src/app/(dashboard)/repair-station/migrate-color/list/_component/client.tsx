@@ -159,21 +159,25 @@ export const Client = () => {
                         </div>
                         <Separator />
                         <div className="grid grid-cols-2 gap-4 justify-around mt-4">
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Brown</p>
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-sky-500 bg-sky-500">
+                                <span className="font-sans font-semibold text-white"> Biru </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs tracking-wide font-medium">2</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(2000)}</p>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Red</p>
+                        </div>
+                        <Separator />
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-red-500 bg-red-500">
+                                <span className="font-sans font-semibold text-white"> Merah </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs  tracking-wide font-medium">20</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(18000)}</p>
                             </div>
                         </div>
+                        <Separator />
                     </div>
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-5">
                         <div className="flex items-center justify-between mb-4">
@@ -193,29 +197,38 @@ export const Client = () => {
                         </div>
                         <Separator />
                         <div className="grid grid-cols-2 gap-4 justify-around mt-4">
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Big</p>
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-green-500 bg-green-500">
+                                <span className="font-sans font-semibold text-white"> Big </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs tracking-wide font-medium">798</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(19152000)}</p>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Green</p>
+                        </div>
+                        <Separator />
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-yellow-500 bg-yellow-400">
+                                <span className="font-sans font-semibold text-white"> Kuning </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs tracking-wide font-medium">8</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(96000)}</p>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Yellow</p>
+                        </div>
+                        <Separator />
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-red-500 bg-red-500">
+                                <span className="font-sans font-semibold text-white"> Merah </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs tracking-wide font-medium">88</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(2112000)}</p>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="text-xs tracking-wide font-medium">Small</p>
+                        </div>
+                        <Separator />
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
+                            <div className="h-8 px-2 flex-none flex items-center text-sm rounded-md justify-center border gap-1 border-sky-900 bg-sky-500">
+                                <span className="font-sans font-semibold text-white"> Small </span>
                             </div>
                             <div className="flex flex-col gap-2 items-end">
                                 <p className="text-xs uppercase tracking-wide font-medium">806</p>
@@ -248,6 +261,9 @@ export const Client = () => {
                                 <p className="text-xs tracking-wide font-medium">0</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(0)}</p>
                             </div>
+                        </div>
+                        <Separator />
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs tracking-wide font-medium">12K</p>
                             </div>
@@ -255,6 +271,9 @@ export const Client = () => {
                                 <p className="text-xs tracking-wide font-medium">0</p>
                                 <p className="text-sm text-gray-400">{formatRupiah(0)}</p>
                             </div>
+                        </div>
+                        <Separator/>
+                        <div className="grid grid-cols-2 gap-4 justify-around mt-4">
                             <div className="flex flex-col gap-2">
                                 <p className="text-xs tracking-wide font-medium">Lainnya</p>
                             </div>
@@ -314,6 +333,6 @@ export const Client = () => {
                     />
                 </div>
             </div>{" "}
-        </div>
+        </div >
     );
 };
