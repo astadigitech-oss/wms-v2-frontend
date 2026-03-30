@@ -5,6 +5,7 @@
 import { useGetListBundle } from "@/app/(dashboard)/inventory/moving-product/bundle/_api/use-get-list-bundle";
 import { DataTable } from "@/components/data-table";
 import Pagination from "@/components/pagination";
+// import { Badge } from "@/components/ui/badge";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -14,12 +15,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
 import { cn, formatRupiah, setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
-import { RefreshCw, Send, Trash2, Truck } from "lucide-react";
+// import { format } from "date-fns";
+import Link from "next/link";
+import { NotebookText, PlusCircle, RefreshCw,} from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
@@ -54,14 +56,14 @@ export const Client = () => {
 
     const dummyData = [
         {
-            barcode: "LQMGT0012",
-            color: "Sample Color",
-            total: 5,
-            price: 500000,
+            code_document: "GRSO3320011",
+            total_product: 2,
+            price: 373000,
+            status: "process",
         },
     ];
 
-    const columnListSale: ColumnDef<any>[] = [
+    const columnListMigrateColor: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -73,51 +75,67 @@ export const Client = () => {
             ),
         },
         {
-            accessorKey: "barcode",
-            header: "Barcode",
+            accessorKey: "code-document",
+            header: "Code Document",
             size: 150,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.barcode || '-'}</div>
+                <div className="break-all">{row.original?.code_document || '-'}</div>
             ),
         },
         {
-            accessorKey: "color",
-            header: "Color",
-            size: 200,
-            cell: ({ row }) => (
-                <div className="break-all">{row.original?.color || '-'}</div>
-            ),
-        },
-        {
-            accessorKey: "total",
-            header: () => <div className="text-center">Total</div>,
+            accessorKey: "total_product",
+            header: "Total Product",
             size: 80,
             cell: ({ row }) => (
-                <div className="break-all text-center">{row.original?.total || 0}</div>
+                <div className="break-all">{row.original?.total_product || 0}</div>
             ),
         },
         {
             accessorKey: "price",
-            header: "Price",
-            size: 130,
+            header: () => <div className="text-center">Price</div>,
+            size: 100,
             cell: ({ row }) => (
-                <div className="break-all">{formatRupiah(row.original?.price || 0)}</div>
+                <div className="break-all text-center">{formatRupiah(row.original?.price || 0)}</div>
+            ),
+        },
+        {
+            accessorKey: "status",
+            header: () => <div className="text-center">Status</div>,
+            size: 80,
+            maxSize: 80,
+            cell: ({ row }) => (
+                <div className="flex gap-4 justify-center">
+                    <span
+                        style={{
+                            backgroundColor: row.original?.status === "process" ? "#0B91FF" : "#fef9c3",
+                            color: row.original?.status === "process" ? "#fefefe" : "#ca8a04",
+                            border: `1.5px solid ${row.original?.status === "process" ? "#fefefe" : "#facc15"}`,
+                            borderRadius: "999px",
+                            padding: "3px 14px",
+                            fontSize: "13px",
+                            fontWeight: 400,
+                            display: "inline-block",
+                        }}
+                    >
+                        {row.original?.status === "process" ? "Process" : "Pending"}
+                    </span>
+                </div>
             ),
         },
         {
             accessorKey: "action",
             header: () => <div className="text-center">Action</div>,
-            size: 80,
+            size: 100,
             cell: () => (
-                <div className="flex gap-2 justify-center items-center">
+                <div className="flex gap-4 justify-center items-center">
                     <TooltipProviderPage
                         side="bottom"
                         align="start"
                         sideOffset={6}
                         value={
                             <div className="flex items-center gap-2">
-                                <Trash2 className="w-4 h-4" />
-                                <span>Delete</span>
+                                <NotebookText className="w-4 h-4" />
+                                <span>Detail</span>
                             </div>
                         }
                     >
@@ -126,19 +144,18 @@ export const Client = () => {
                             className={cn(
                                 "w-9 h-9 px-0 flex items-center justify-center",
                                 "border-[#B0BAC9] text-[#B0BAC9]",
-                                "hover:bg-red-600 hover:text-white hover:border-red-600",
+                                "hover:bg-blue-600 hover:text-white hover:border-blue-600",
                                 "rounded-full transition-all duration-200",
                                 "disabled:hover:bg-transparent",
                             )}
                         >
-                            <Trash2 className="w-4 h-4" />
+                            <NotebookText className="w-4 h-4" />
                         </Button>
                     </TooltipProviderPage>
                 </div>
             ),
         },
     ];
-
     return (
         <div className="flex flex-col bg-gray-100 w-full px-4 py-4 gap-4">
             <Breadcrumb>
@@ -149,66 +166,13 @@ export const Client = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>Repair Station</BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/repair-station/migrate-color/list">Migrate Color</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>Add List Product Repair</BreadcrumbItem>
+                    <BreadcrumbItem>List Product Damaged</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-2">
-                    <div className="flex items-center justify-start gap-3">
-                        <div className="flex items-center gap-2 bg-sky-500 text-sky-100 px-3 py-2.5 rounded-full border border-sky-300">
-                            <Truck className="w-5 h-6" />
-                        </div>
-                        <span className="font-semibold text-xl">Create Migrate Color</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-4">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Destination</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Destination"
-                            />
-                        </div>
-                    </div>
-                    {/* Row 2: 3 columns */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Color Product</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Color Product"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Qty</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Qty"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Grand Total Section */}
-                    <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
-                        <Send className="w-4 h-4" />
-                        Create
-                    </Button>
-                </div>
-            </div>
-
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                {/* Add Product Section */}
-                <div className="flex flex-col w-full gap-3">
-                    <h3 className="text-base font-semibold">List Product Filtered</h3>
-                    <div className="flex gap-2 items-end w-full">
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-10 flex-col">
+                <h2 className="text-xl font-bold">List Product</h2>
+                <div className="flex flex-col w-full gap-4">
+                    <div className="flex gap-2 items-center w-full justify-between">
                         <div className="flex items-center gap-3 w-full">
                             <Input
                                 className="w-2/5 border-sky-400/80 focus-visible:ring-sky-400"
@@ -229,26 +193,37 @@ export const Client = () => {
                                 </Button>
                             </TooltipProviderPage>
                         </div>
-                        <Button
-                            className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white"
-                        >
-                            <Send className="w-4 h-4 mr-2" />
-                            Send
-                        </Button>
+                        <div className="flex items-center gap-3 w-full justify-end">
+                            <Button
+                                className="items-center flex-none h-9 w-40 blue border-sky-400/80 text-white hover:text-white disabled:opacity-100 disabled:border-sky-400/80 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                                variant={"outline"}
+                            >
+                                    <NotebookText className={"w-4 h-4"} />
+                                    Export Data
+                            </Button>
+                            <Button
+                                asChild
+                                className="items-center flex-none h-9 w-40 blue border-sky-400/80 text-white hover:text-white disabled:opacity-100 disabled:border-sky-400/80 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                                variant={"outline"}
+                            >
+                                <Link href="/repair-station/product-damaged/create">
+                                    <PlusCircle className={"w-4 h-4"} />
+                                    Create
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
-                </div>
-                {/* Table Section */}
-                <div className="flex flex-col w-full gap-4">
                     <DataTable
-                        columns={columnListSale}
+                        columns={columnListMigrateColor}
                         data={[...dummyData]}
+                    // isLoading={loadingAPK}
                     />
                     <Pagination
                         pagination={{ ...metaPage, current: page }}
                         setPagination={setPage}
                     />
                 </div>
-            </div>
-        </div>
+            </div>{" "}
+        </div >
     );
 };

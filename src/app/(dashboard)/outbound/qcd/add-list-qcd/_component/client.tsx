@@ -118,7 +118,7 @@ export const Client = () => {
                         <BreadcrumbLink href="/">Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>Repair Station</BreadcrumbItem>
+                    <BreadcrumbItem>OutBound</BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                         <BreadcrumbLink href="/outbound/qcd">QCD</BreadcrumbLink>
