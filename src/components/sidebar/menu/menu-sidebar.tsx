@@ -3,6 +3,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ButtonSidebar } from "../button-sidebar";
 import {
+  BadgeDollarSign,
   // BadgeDollarSign,
   BarChartBig,
   Blocks,
@@ -12,6 +13,7 @@ import {
   FolderClock,
   LibraryBigIcon,
   LineChart,
+  NotebookPen,
   PackageSearch,
   RailSymbol,
   ScanText,
@@ -55,22 +57,18 @@ const sidebarMenu = [
             href: "/dashboard/report-sale/general-sale",
           },
           {
-            title: "Analytic Sale Monthly",
-            href: "/dashboard/report-sale/analytic-sale-monthly",
-          },
-          {
-            title: "Analytic Sale Annual",
-            href: "/dashboard/report-sale/analytic-sale-annual",
+            title: "Analytic Sale",
+            href: "/dashboard/report-sale/analytic-sale",
           },
         ],
       },
-      // {
-      //   title: "Analytic Sale",
-      //   href: "/dashboard/analytic-sale",
-      //   icon: <CandlestickChart className="w-5 h-5 stroke-[1.5]" />,
-      //   query: "analytic-sale",
-      //   sub_menu: [],
-      // },
+      {
+        title: "Analytic Sale",
+        href: "/dashboard/summary-report",
+        icon: <NotebookPen className="w-5 h-5 stroke-[1.5]" />,
+        query: "analytic-sale",
+        sub_menu: [],
+      },
       // {
       //   title: "Summary Report",
       //   href: undefined,
@@ -248,21 +246,6 @@ const sidebarMenu = [
       //     },
       //   ],
       // },
-      // {
-      //   title: "Stock Opname",
-      //   href: undefined,
-      //   icon: <BookMarked className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [
-      //     {
-      //       title: "Color",
-      //       href: "/inventory/stock-opname/color",
-      //     },
-      //     {
-      //       title: "Category",
-      //       href: "/inventory/stock-opname/category",
-      //     },
-      //   ],
-      // },
     ],
   },
   {
@@ -317,7 +300,7 @@ const sidebarMenu = [
     href: undefined,
     menu: [
       {
-        title: "sale",
+        title: "Sale",
         href: "/outbound/sale",
         icon: <ShoppingBasket className="w-5 h-5 stroke-[1.5]" />,
         sub_menu: [],
@@ -334,12 +317,18 @@ const sidebarMenu = [
         icon: <ShoppingCart className="w-5 h-5 stroke-[1.5]" />,
         sub_menu: [],
       },
-      // {
-      //   title: "buyer",
-      //   href: "/outbound/buyer",
-      //   icon: <BadgeDollarSign className="w-5 h-5 stroke-[1.5]" />,
-      //   sub_menu: [],
-      // },
+      {
+        title: "Cargo",
+        href: "/outbound/cargo",
+        icon: <Truck className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
+      {
+        title: "Buyer",
+        href: "/outbound/buyer",
+        icon: <BadgeDollarSign className="w-5 h-5 stroke-[1.5]" />,
+        sub_menu: [],
+      },
       // {
       //   title: "Class buyer",
       //   href: "/outbond/class-buyer",

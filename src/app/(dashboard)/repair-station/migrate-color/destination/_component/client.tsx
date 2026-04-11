@@ -80,7 +80,7 @@ export const Client = () => {
         },
     ];
 
-    const columnListMigrateColor: ColumnDef<any>[] = [
+    const columnListDestination: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -225,7 +225,7 @@ export const Client = () => {
                         </div>
                     </div>
                     <DataTable
-                        columns={columnListMigrateColor}
+                        columns={columnListDestination}
                         data={[...dummyData]}
                     // isLoading={loadingAPK}
                     />

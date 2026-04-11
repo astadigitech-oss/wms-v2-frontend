@@ -64,7 +64,7 @@ export const Client = () => {
         },
     ];
 
-    const columnListProductRepair: ColumnDef<any>[] = [
+    const columnListQcd: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -204,7 +204,7 @@ export const Client = () => {
                         </div>
                     </div>
                     <DataTable
-                        columns={columnListProductRepair}
+                        columns={columnListQcd}
                         data={[...dummyData]}
                     // isLoading={loadingAPK}
                     />
