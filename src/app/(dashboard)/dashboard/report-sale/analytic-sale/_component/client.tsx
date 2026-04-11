@@ -38,6 +38,12 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // ─── Dummy monthly chart data ─────────────────────────────────────────────────
 const monthlyData = [
@@ -169,6 +175,13 @@ export const Client = () => {
         });
     }, []);
 
+    const [mode, setMode] = useState<"annual" | "monthly">("annual");
+
+    const modeConfig = {
+        annual: { label: "Analytic Sale Annualy", color: "#7F77DD" },
+        monthly: { label: "Analytic Sale Monthly", color: "#1D9E75" },
+    };
+
     const handleSeeAll = useCallback(() => {
         setActiveCategories(new Set(ALL_KEYS));
     }, []);
@@ -281,13 +294,29 @@ export const Client = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-5">
                 {/* Toolbar */}
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-                    <Button
-                        variant="outline"
-                        className="items-center flex-none purple text-white hover:text-white disabled:opacity-100 gap-1.5"
-                    >
-                        Analytic Sale Annualy
-                        <ChevronDown className="w-3.5 h-3.5" />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                style={{
+                                    background: modeConfig[mode].color,
+                                    borderColor: modeConfig[mode].color,
+                                }}
+                                className="text-white hover:text-white gap-1.5 rounded-md"
+                            >
+                                {modeConfig[mode].label}
+                                <ChevronDown className="w-3.5 h-3.5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                            {Object.entries(modeConfig).map(([key, cfg]) => (
+                                <DropdownMenuItem key={key} onClick={() => setMode(key as keyof typeof modeConfig)}>
+                                    <span className="w-2 h-2 rounded-md mr-2 inline-block" style={{ background: cfg.color }} />
+                                    {cfg.label}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     <div className="flex items-center gap-4">
                         <Button
                             variant="outline"
@@ -424,8 +453,8 @@ export const Client = () => {
                                 size="icon"
                                 onClick={() => setViewMode("list")}
                                 className={`h-9 w-9 rounded-none transition-colors ${viewMode === "list"
-                                        ? "bg-sky-500 text-white hover:bg-sky-500 hover:text-white"
-                                        : "bg-white text-gray-500 hover:bg-gray-50"
+                                    ? "bg-sky-500 text-white hover:bg-sky-500 hover:text-white"
+                                    : "bg-white text-gray-500 hover:bg-gray-50"
                                     }`}
                             >
                                 <List className="w-4 h-4" />
@@ -435,8 +464,8 @@ export const Client = () => {
                                 size="icon"
                                 onClick={() => setViewMode("grid")}
                                 className={`h-9 w-9 rounded-none transition-colors ${viewMode === "grid"
-                                        ? "bg-sky-500 text-white hover:bg-sky-500 hover:text-white"
-                                        : "bg-white text-gray-500 hover:bg-gray-50"
+                                    ? "bg-sky-500 text-white hover:bg-sky-500 hover:text-white"
+                                    : "bg-white text-gray-500 hover:bg-gray-50"
                                     }`}
                             >
                                 <LayoutGrid className="w-4 h-4" />

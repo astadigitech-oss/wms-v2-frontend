@@ -63,7 +63,7 @@ export const Client = () => {
         },
     ];
 
-    const columnListSale: ColumnDef<any>[] = [
+    const columnListQcd: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -209,7 +209,7 @@ export const Client = () => {
                 {/* Table Section */}
                 <div className="flex flex-col w-full gap-4">
                     <DataTable
-                        columns={columnListSale}
+                        columns={columnListQcd}
                         data={[...dummyData]}
                     />
                     <Pagination

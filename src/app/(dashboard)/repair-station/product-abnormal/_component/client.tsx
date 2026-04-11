@@ -77,7 +77,7 @@ export const Client = () => {
         },
     ];
 
-    const columnListMigrateColor: ColumnDef<any>[] = [
+    const columnListAbnormal: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -245,7 +245,7 @@ export const Client = () => {
                         </div>
                     </div>
                     <DataTable
-                        columns={columnListMigrateColor}
+                        columns={columnListAbnormal}
                         data={[...dummyData]}
                     // isLoading={loadingAPK}
                     />

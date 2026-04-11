@@ -15,11 +15,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useDebounce } from "@/hooks/use-debounce";
 import { cn, formatRupiah, setPaginate } from "@/lib/utils";
 import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { ColumnDef } from "@tanstack/react-table";
-import { RefreshCw, Send, Trash2, Truck } from "lucide-react";
+import { ArrowLeft, ClipboardList, Pencil, RefreshCw, UserCircle2 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
@@ -54,14 +55,13 @@ export const Client = () => {
 
     const dummyData = [
         {
-            barcode: "LQMGT0012",
-            color: "Sample Color",
-            total: 5,
-            price: 500000,
+            code_document: "GRO25081800030",
+            qty_product: 12,
+            total_purchase: 10000,
         },
     ];
 
-    const columnListMigrateColor: ColumnDef<any>[] = [
+    const columnListSale: ColumnDef<any>[] = [
         {
             header: () => <div className="text-center">No</div>,
             id: "id",
@@ -73,35 +73,26 @@ export const Client = () => {
             ),
         },
         {
-            accessorKey: "barcode",
-            header: "Barcode",
-            size: 150,
+            accessorKey: "code_document",
+            header: "Code Document",
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.barcode || '-'}</div>
+                <div className="break-all">{row.original?.code_document || "-"}</div>
             ),
         },
         {
-            accessorKey: "color",
-            header: "Color",
-            size: 200,
+            accessorKey: "qty_product",
+            header: () => <div className="text-center">Qty Product</div>,
             cell: ({ row }) => (
-                <div className="break-all">{row.original?.color || '-'}</div>
+                <div className="text-center">{row.original?.qty_product ?? 0}</div>
             ),
         },
         {
-            accessorKey: "total",
-            header: () => <div className="text-center">Total</div>,
-            size: 80,
+            accessorKey: "total_purchase",
+            header: () => <div className="text-center">Total Purchase</div>,
             cell: ({ row }) => (
-                <div className="break-all text-center">{row.original?.total || 0}</div>
-            ),
-        },
-        {
-            accessorKey: "price",
-            header: "Price",
-            size: 130,
-            cell: ({ row }) => (
-                <div className="break-all">{formatRupiah(row.original?.price || 0)}</div>
+                <div className="text-center">
+                    {formatRupiah(row.original?.total_purchase ?? 0)}
+                </div>
             ),
         },
         {
@@ -116,7 +107,7 @@ export const Client = () => {
                         sideOffset={6}
                         value={
                             <div className="flex items-center gap-2">
-                                <Trash2 className="w-4 h-4" />
+                                <ClipboardList className="w-4 h-4" />
                                 <span>Delete</span>
                             </div>
                         }
@@ -126,12 +117,12 @@ export const Client = () => {
                             className={cn(
                                 "w-9 h-9 px-0 flex items-center justify-center",
                                 "border-[#B0BAC9] text-[#B0BAC9]",
-                                "hover:bg-red-600 hover:text-white hover:border-red-600",
+                                "hover:bg-sky-500 hover:text-white hover:border-sky-500",
                                 "rounded-full transition-all duration-200",
                                 "disabled:hover:bg-transparent",
                             )}
                         >
-                            <Trash2 className="w-4 h-4" />
+                            <ClipboardList className="w-4 h-4" />
                         </Button>
                     </TooltipProviderPage>
                 </div>
@@ -147,61 +138,92 @@ export const Client = () => {
                         <BreadcrumbLink href="/">Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>Repair Station</BreadcrumbItem>
+                    <BreadcrumbItem>Outbound</BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/repair-station/migrate-color/list">Migrate Color</BreadcrumbLink>
+                        <BreadcrumbLink href="/outbound/buyer">Buyer</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>Add List Product Repair</BreadcrumbItem>
+                    <BreadcrumbItem>Edit Buyer</BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-2">
-                    <div className="flex items-center justify-start gap-3">
-                        <div className="flex items-center gap-2 bg-sky-500 text-sky-100 px-3 py-2.5 rounded-full border border-sky-300">
-                            <Truck className="w-5 h-6" />
-                        </div>
-                        <span className="font-semibold text-xl">Create Migrate Color</span>
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-4 items-center">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => window.history.back()}
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </Button>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center bg-sky-500 text-white w-9 h-9 rounded-full">
+                        <UserCircle2 className="w-6 h-6" />
                     </div>
+                    <span className="font-semibold text-lg">Edit Buyer</span>
                 </div>
             </div>
 
-            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
-                <div className="flex flex-col w-full gap-4 p-4">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Destination</Label>
+            <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-5 flex-col gap-4">
+                <h3 className="text-base font-semibold">Data Buyer</h3>
+
+                <div className="grid grid-cols-2 gap-x-6">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5 mr-2">
+                            <Label className="text-sm font-medium text-gray-700">Nama</Label>
                             <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Destination"
+                                className="border-gray-300 focus-visible:ring-sky-400"
+                                defaultValue="Dono"
+                                placeholder="Nama"
                             />
                         </div>
-                    </div>
-                    {/* Row 2: 3 columns */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Color Product</Label>
+                        <div className="flex flex-col gap-1.5 mr-2">
+                            <Label className="text-sm font-medium text-gray-700">Email</Label>
                             <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Color Product"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label className="text-sm font-bold">Qty</Label>
-                            <Input
-                                className="border-sky-400/80 focus-visible:ring-sky-400"
-                                placeholder="Qty"
+                                className="border-gray-300 focus-visible:ring-sky-400"
+                                placeholder="Email"
+                                type="email"
                             />
                         </div>
                     </div>
 
-                    {/* Grand Total Section */}
-                    <Button className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white">
-                        <Send className="w-4 h-4" />
-                        Create
-                    </Button>
+                    {/* Right: Alamat textarea — stretches to match height of left column */}
+                    <div className="flex flex-col gap-1.5 ml-2">
+                        <Label className="text-sm font-medium text-gray-700">Alamat</Label>
+                        <Textarea
+                            className="border-gray-300 focus-visible:ring-sky-400 resize-none"
+                            style={{ minHeight: "96px", height: "100%" }}
+                            placeholder="Alamat"
+                        />
+                    </div>
                 </div>
+
+                {/* Bottom section: No Hp (left) | Rank (right) */}
+                <div className="grid grid-cols-2 gap-x-6">
+                    <div className="flex flex-col gap-1.5 mr-2">
+                        <Label className="text-sm font-medium text-gray-700">No Hp</Label>
+                        <Input
+                            className="border-gray-300 focus-visible:ring-sky-400"
+                            defaultValue="082312312"
+                            placeholder="No Hp"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1.5 ml-2">
+                        <Label className="text-sm font-medium text-gray-700">Rank</Label>
+                        <Input
+                            className="border-gray-300 focus-visible:ring-sky-400"
+                            defaultValue="New"
+                            placeholder="Rank"
+                            readOnly
+                        />
+                    </div>
+                </div>
+
+                {/* Edit Button */}
+                <Button className="w-full h-10 bg-sky-500 hover:bg-sky-600 text-white font-semibold">
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                </Button>
             </div>
 
             <div className="flex w-full bg-white rounded-md overflow-hidden shadow px-5 py-3 gap-6 flex-col">
@@ -229,18 +251,12 @@ export const Client = () => {
                                 </Button>
                             </TooltipProviderPage>
                         </div>
-                        <Button
-                            className="items-center h-10 px-6 bg-sky-500 hover:bg-sky-600 text-white"
-                        >
-                            <Send className="w-4 h-4 mr-2" />
-                            Send
-                        </Button>
                     </div>
                 </div>
                 {/* Table Section */}
                 <div className="flex flex-col w-full gap-4">
                     <DataTable
-                        columns={columnListMigrateColor}
+                        columns={columnListSale}
                         data={[...dummyData]}
                     />
                     <Pagination

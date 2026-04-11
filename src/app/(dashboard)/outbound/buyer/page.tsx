@@ -1,14 +1,15 @@
+import React from "react";
 import { Metadata } from "next";
-import { Client } from "./_component/client";
 import { protect } from "@/lib/protect";
 import { redirect } from "next/navigation";
 import { Footer } from "@/components/footer";
+import { Client } from "./_component/client";
 
 export const metadata: Metadata = {
-    title: "Analytic Sale Annual",
+    title: "List Migrate Color",
 };
 
-const AnalyticSaleAnnual = async () => {
+const ListBuyer = async () => {
     const user = await protect();
 
     if (!user) redirect("/login");
@@ -20,4 +21,4 @@ const AnalyticSaleAnnual = async () => {
     );
 };
 
-export default AnalyticSaleAnnual;
+export default ListBuyer;
