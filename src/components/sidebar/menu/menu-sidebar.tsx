@@ -63,10 +63,10 @@ const sidebarMenu = [
         ],
       },
       {
-        title: "Analytic Sale",
+        title: "Summary Report",
         href: "/dashboard/summary-report",
         icon: <NotebookPen className="w-5 h-5 stroke-[1.5]" />,
-        query: "analytic-sale",
+        query: "summary-report",
         sub_menu: [],
       },
       // {
